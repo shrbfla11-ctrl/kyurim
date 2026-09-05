@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // 디자인 참고 파일
+    "docs/**",
   ]),
 ]);
 
