@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { FormError, PasswordField, PrimaryButton, SuccessText } from "./fields";
+import { FormError, PasswordField, SuccessText } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { collect, isValidNewPassword, validateNewPassword, validatePasswordConfirm } from "./validate";
 
 type Errors = { password?: string; password2?: string };
@@ -58,9 +59,7 @@ export function UpdatePasswordForm() {
             재설정 링크는 10분 동안만 유효해요. 다시 요청해 주세요.
           </p>
         </div>
-        <a href="/reset-password" className="flex h-14 items-center justify-center rounded-2xl bg-blue text-[17px] font-bold text-white hover:bg-blue-dark">
-          재설정 링크 다시 받기
-        </a>
+        <Button href="/reset-password" full>재설정 링크 다시 받기</Button>
       </div>
     );
   }
@@ -99,13 +98,14 @@ export function UpdatePasswordForm() {
         />
       </div>
       {formError && <FormError>{formError}</FormError>}
-      <PrimaryButton
+      <Button
         type="submit"
+        full
         loading={loading || hasSession === null}
         loadingLabel={hasSession === null ? "확인 중..." : "변경 중..."}
       >
         비밀번호 변경
-      </PrimaryButton>
+      </Button>
     </form>
   );
 }

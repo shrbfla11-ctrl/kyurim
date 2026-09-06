@@ -1,4 +1,5 @@
 import { CameraIcon, CheckIcon } from "@/components/icons";
+import { Button } from "@/components/ui/Button";
 import { PhoneMockup } from "./PhoneMockup";
 
 export function Hero() {
@@ -20,19 +21,12 @@ export function Hero() {
         </p>
 
         <div className="mt-6 flex flex-col gap-2 lg:mt-10 lg:flex-row">
-          <a
-            href="#cta"
-            className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-blue px-7 text-[17px] font-bold text-white hover:bg-blue-dark"
-          >
-            <CameraIcon size={22} />
+          <Button href="#cta" icon={<CameraIcon size={22} />}>
             카메라로 알약 인식하기
-          </a>
-          <a
-            href="#search"
-            className="flex h-14 items-center justify-center rounded-2xl bg-blue-light px-7 text-[17px] font-bold text-blue hover:bg-[#d9eaff]"
-          >
+          </Button>
+          <Button href="#search" variant="secondary">
             식별 문자로 검색
-          </a>
+          </Button>
         </div>
 
         <div className="mt-10 hidden gap-6 text-sm text-gray-5 lg:flex">

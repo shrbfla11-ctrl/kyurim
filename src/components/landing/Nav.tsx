@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { MenuIcon } from "@/components/icons";
+import { Button } from "@/components/ui/Button";
 
 const links = [
   { href: "#search", label: "알약 검색" },
@@ -37,12 +38,9 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link
-            href="/login"
-            className="flex h-10 items-center rounded-xl bg-blue px-4 text-sm font-bold text-white hover:bg-blue-dark lg:h-11 lg:px-5 lg:text-[15px]"
-          >
+          <Button href="/login" size="sm" className="lg:h-11 lg:px-5 lg:text-[15px]">
             시작하기
-          </Link>
+          </Button>
           <button
             type="button"
             aria-label="메뉴"

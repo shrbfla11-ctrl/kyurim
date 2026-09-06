@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Checkbox, FormError, PasswordField, PrimaryButton, TextField } from "./fields";
+import { Checkbox, FormError, PasswordField, TextField } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { SocialButtons } from "./SocialButtons";
 import { collect, validateEmail, validatePassword } from "./validate";
 
@@ -86,7 +87,7 @@ export function LoginForm() {
       </div>
 
       <div className="flex flex-col gap-6">
-        <PrimaryButton type="submit" loading={loading} loadingLabel="로그인 중...">로그인</PrimaryButton>
+        <Button type="submit" full loading={loading} loadingLabel="로그인 중...">로그인</Button>
         <div className="flex items-center gap-4 text-[13px] text-placeholder">
           <span className="h-px flex-1 bg-gray-2" />또는<span className="h-px flex-1 bg-gray-2" />
         </div>

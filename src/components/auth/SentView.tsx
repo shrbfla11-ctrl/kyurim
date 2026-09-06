@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { CheckIcon } from "@/components/icons";
+import { Button } from "@/components/ui/Button";
 
 // 메일 발송 완료 화면 (비밀번호 재설정, 가입 인증 공용)
 export function SentView({
@@ -34,12 +34,7 @@ export function SentView({
         </div>
       </div>
       <div className="flex flex-col gap-6">
-        <Link
-          href="/login"
-          className="flex h-14 items-center justify-center rounded-2xl bg-blue text-[17px] font-bold text-white hover:bg-blue-dark"
-        >
-          로그인으로 돌아가기
-        </Link>
+        <Button href="/login" full>로그인으로 돌아가기</Button>
         <p className="text-center text-sm text-gray-5">
           {resent ? (
             "메일을 다시 보냈어요."

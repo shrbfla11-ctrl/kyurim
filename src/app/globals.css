@@ -81,7 +81,24 @@ body {
   input {
     font-family: inherit;
   }
+  /* 버튼 공통: 포인터 커서, 호버 시 살짝 어둡게, 0.3초 부드러운 전환 */
+  button,
+  a {
+    transition-property: background-color, color, border-color, filter, opacity;
+    transition-duration: 300ms;
+    transition-timing-function: ease;
+  }
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  button:not(:disabled):hover {
+    filter: brightness(0.92);
+  }
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   .motion-safe-anim {

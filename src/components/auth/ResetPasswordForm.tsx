@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { BackIcon } from "@/components/icons";
-import { FormError, PrimaryButton, TextField } from "./fields";
+import { FormError, TextField } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { SentView } from "./SentView";
 import { validateEmail } from "./validate";
 
@@ -75,7 +76,7 @@ export function ResetPasswordForm() {
       />
       {formError && <FormError>{formError}</FormError>}
       <div className="flex flex-col gap-6">
-        <PrimaryButton type="submit" loading={loading} loadingLabel="보내는 중...">재설정 링크 보내기</PrimaryButton>
+        <Button type="submit" full loading={loading} loadingLabel="보내는 중...">재설정 링크 보내기</Button>
         <Link href="/login" className="flex items-center justify-center gap-1.5 text-sm font-semibold text-gray-5">
           <BackIcon size={16} />
           로그인으로 돌아가기

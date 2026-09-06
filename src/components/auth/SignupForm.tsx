@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Checkbox, FormError, PasswordField, PrimaryButton, SuccessText, TextField } from "./fields";
+import { Checkbox, FormError, PasswordField, SuccessText, TextField } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { SentView } from "./SentView";
 import {
   collect,
@@ -183,7 +184,7 @@ export function SignupForm() {
       {formError && <FormError>{formError}</FormError>}
 
       <div className="flex flex-col gap-6">
-        <PrimaryButton type="submit" loading={loading} loadingLabel="가입 중...">가입하기</PrimaryButton>
+        <Button type="submit" full loading={loading} loadingLabel="가입 중...">가입하기</Button>
         <p className="text-center text-sm text-gray-5">
           이미 계정이 있으신가요? <Link href="/login" className="font-bold">로그인</Link>
         </p>

@@ -4,7 +4,7 @@ import { useState, type InputHTMLAttributes, type ReactNode } from "react";
 import { CheckIcon, ErrorIcon, EyeIcon, EyeOffIcon } from "@/components/icons";
 
 const inputBase =
-  "h-14 w-full rounded-[14px] border-[1.5px] bg-gray-1 px-4 text-base text-ink outline-none transition-colors focus:border-blue focus:bg-white";
+  "h-14 w-full rounded-[14px] border-[1.5px] bg-gray-1 px-4 text-base text-ink outline-none transition-colors duration-300 focus:border-blue focus:bg-white";
 
 type FieldProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
@@ -12,29 +12,36 @@ type FieldProps = InputHTMLAttributes<HTMLInputElement> & {
   hint?: ReactNode;
 };
 
+function FieldLabel({ children }: { children: ReactNode }) {
+  return <span className="mb-2 block text-sm font-semibold text-gray-6">{children}</span>;
+}
+
+/** 라벨 + 텍스트 입력. error 가 있으면 빨간 테두리와 문구를 표시합니다. */
 export function TextField({ label, error, hint, className, ...rest }: FieldProps) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-semibold text-gray-6">{label}</span>
+      <FieldLabel>{label}</FieldLabel>
       <input
         {...rest}
+        aria-invalid={!!error}
         className={`${inputBase} ${error ? "border-red" : "border-transparent"} ${className ?? ""}`}
       />
-      {error && <ErrorText>{error}</ErrorText>}
-      {!error && hint}
+      {error ? <ErrorText>{error}</ErrorText> : hint}
     </label>
   );
 }
 
+/** 보기/숨기기 토글이 있는 비밀번호 입력. */
 export function PasswordField({ label, error, hint, className, ...rest }: FieldProps) {
   const [show, setShow] = useState(false);
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-semibold text-gray-6">{label}</span>
+      <FieldLabel>{label}</FieldLabel>
       <span className="relative block">
         <input
           {...rest}
           type={show ? "text" : "password"}
+          aria-invalid={!!error}
           className={`${inputBase} pr-[52px] ${error ? "border-red" : "border-transparent"} ${className ?? ""}`}
         />
         <button
@@ -46,27 +53,8 @@ export function PasswordField({ label, error, hint, className, ...rest }: FieldP
           {show ? <EyeOffIcon size={22} /> : <EyeIcon size={22} />}
         </button>
       </span>
-      {error && <ErrorText>{error}</ErrorText>}
-      {!error && hint}
+      {error ? <ErrorText>{error}</ErrorText> : hint}
     </label>
-  );
-}
-
-export function ErrorText({ children }: { children: ReactNode }) {
-  return (
-    <span className="mt-2 flex items-center gap-1.5 text-[13px] text-red">
-      <ErrorIcon size={14} />
-      {children}
-    </span>
-  );
-}
-
-export function SuccessText({ children }: { children: ReactNode }) {
-  return (
-    <span className="mt-2 flex items-center gap-1.5 text-[13px] text-green">
-      <CheckIcon size={14} />
-      {children}
-    </span>
   );
 }
 
@@ -89,26 +77,25 @@ export function Checkbox({
   );
 }
 
-export function PrimaryButton({
-  loading,
-  loadingLabel,
-  children,
-  ...rest
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { loading?: boolean; loadingLabel?: string }) {
+export function ErrorText({ children }: { children: ReactNode }) {
   return (
-    <button
-      {...rest}
-      disabled={loading || rest.disabled}
-      className={`flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-blue text-[17px] font-bold text-white hover:bg-blue-dark disabled:cursor-not-allowed ${loading ? "opacity-85" : ""}`}
-    >
-      {loading && (
-        <span className="block h-5 w-5 animate-spin-fast rounded-full border-[2.5px] border-white/35 border-t-white" />
-      )}
-      {loading && loadingLabel ? loadingLabel : children}
-    </button>
+    <span className="mt-2 flex items-center gap-1.5 text-[13px] text-red">
+      <ErrorIcon size={14} />
+      {children}
+    </span>
   );
 }
 
+export function SuccessText({ children }: { children: ReactNode }) {
+  return (
+    <span className="mt-2 flex items-center gap-1.5 text-[13px] text-green">
+      <CheckIcon size={14} />
+      {children}
+    </span>
+  );
+}
+
+/** 폼 전체에 대한 오류 박스 (서버 응답 오류 등). */
 export function FormError({ children }: { children: ReactNode }) {
   return (
     <div className="flex items-start gap-2 rounded-[14px] bg-red/10 px-4 py-3 text-sm text-red">
