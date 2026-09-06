@@ -7,6 +7,10 @@
   --color-gray-3: #b8c0cb;
   --color-gray-4: #8b95a1;
   --color-gray-5: #6b7684;
+  --color-gray-6: #4e5968;
+  --color-placeholder: #b0b8c1;
+  --color-red: #f04452;
+  --color-kakao: #fee500;
   --color-blue: #3182f6;
   --color-blue-dark: #1b64da;
   --color-blue-light: #e8f3ff;
@@ -26,6 +30,7 @@
   --animate-hl: kHl 6s ease-in-out infinite;
   --animate-check: kCheck 6s ease-in-out infinite;
   --animate-card: kCard 6s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  --animate-spin-fast: kSpin 0.8s linear infinite;
 
   @keyframes kScan {
     0% { top: 0; opacity: 1; }
@@ -46,6 +51,9 @@
     92% { opacity: 1; transform: scale(1); }
     100% { opacity: 0; }
   }
+  @keyframes kSpin {
+    to { transform: rotate(360deg); }
+  }
   @keyframes kCard {
     0%, 52% { transform: translateY(110%); opacity: 0; }
     64% { transform: translateY(0); opacity: 1; }
@@ -65,6 +73,13 @@ body {
 @layer base {
   a {
     text-decoration: none;
+  }
+  input::placeholder {
+    color: var(--color-placeholder);
+  }
+  button,
+  input {
+    font-family: inherit;
   }
 }
 

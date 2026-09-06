@@ -37,12 +37,12 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <a
-            href="#cta"
+          <Link
+            href="/login"
             className="flex h-10 items-center rounded-xl bg-blue px-4 text-sm font-bold text-white hover:bg-blue-dark lg:h-11 lg:px-5 lg:text-[15px]"
           >
             시작하기
-          </a>
+          </Link>
           <button
             type="button"
             aria-label="메뉴"

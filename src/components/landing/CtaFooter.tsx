@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export function Cta() {
   return (
@@ -13,12 +14,12 @@ export function Cta() {
             가입 없이 카메라만 켜면 시작할 수 있어요.
           </p>
         </div>
-        <button
-          type="button"
-          className="mt-6 h-14 w-full flex-none rounded-2xl bg-white text-[17px] font-bold text-blue hover:bg-blue-light lg:mt-0 lg:w-auto lg:px-8"
+        <Link
+          href="/signup"
+          className="mt-6 flex h-14 w-full flex-none items-center justify-center rounded-2xl bg-white text-[17px] font-bold text-blue hover:bg-blue-light lg:mt-0 lg:w-auto lg:px-8"
         >
           카메라로 알약 인식하기
-        </button>
+        </Link>
       </div>
     </section>
   );
