@@ -29,7 +29,7 @@ function fontClass(variant: ButtonVariant, size: ButtonSize) {
 
 const baseClass =
   "inline-flex items-center justify-center transition duration-300 " +
-  "hover:brightness-[0.92] disabled:cursor-not-allowed disabled:hover:brightness-100";
+  "hover:brightness-[0.96] disabled:cursor-not-allowed disabled:hover:brightness-100";
 
 type CommonProps = {
   variant?: ButtonVariant;

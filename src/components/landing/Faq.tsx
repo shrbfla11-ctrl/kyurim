@@ -21,7 +21,7 @@ export function Faq() {
   const [open, setOpen] = useState<number>(0);
 
   return (
-    <section className="mx-auto w-full max-w-[1440px] px-6 pt-16 lg:px-20 lg:pt-24">
+    <section id="faq" className="mx-auto w-full max-w-[1440px] px-6 pt-16 lg:px-20 lg:pt-24">
       <div className="lg:mx-auto lg:max-w-[800px]">
         <h2 className="text-[28px] font-bold leading-[1.3] tracking-[-0.03em] lg:text-center lg:text-[32px]">
           자주 묻는 질문

@@ -5,14 +5,16 @@ import Link from "next/link";
 import { useState } from "react";
 import { MenuIcon } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
+import { UserMenu, type UserSummary } from "@/components/auth/UserMenu";
 
 const links = [
   { href: "#search", label: "알약 검색" },
   { href: "#log", label: "복약 기록" },
   { href: "#how", label: "이용 가이드" },
+  { href: "#faq", label: "고객지원" },
 ];
 
-export function Nav() {
+export function Nav({ user }: { user: UserSummary | null }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -38,9 +40,13 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button href="/login" size="sm" className="lg:h-11 lg:px-5 lg:text-[15px]">
-            시작하기
-          </Button>
+          {user ? (
+            <UserMenu user={user} />
+          ) : (
+            <Button href="/login" size="sm" className="lg:h-11 lg:px-5 lg:text-[15px]">
+              시작하기
+            </Button>
+          )}
           <button
             type="button"
             aria-label="메뉴"

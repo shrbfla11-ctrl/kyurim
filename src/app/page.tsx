@@ -1,3 +1,4 @@
+import { getUserSummary } from "@/lib/auth/user";
 import { Nav } from "@/components/landing/Nav";
 import { Hero } from "@/components/landing/Hero";
 import { HowItWorks } from "@/components/landing/HowItWorks";
@@ -7,10 +8,12 @@ import { Trust } from "@/components/landing/Trust";
 import { Faq } from "@/components/landing/Faq";
 import { Cta, Footer } from "@/components/landing/CtaFooter";
 
-export default function Home() {
+export default async function Home() {
+  const summary = await getUserSummary();
+
   return (
     <>
-      <Nav />
+      <Nav user={summary} />
       <main>
         <Hero />
         <HowItWorks />
