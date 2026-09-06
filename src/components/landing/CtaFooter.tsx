@@ -8,14 +8,14 @@ export function Cta() {
         <div>
           <h2 className="text-[28px] font-bold leading-[1.3] tracking-[-0.03em] lg:text-[32px]">
             지금 바로
-            <br className="lg:hidden" /> 내 알약을 확인해 보세요
+            <br className="lg:hidden" /> 내 제품이 정품인지 확인해 보세요
           </h2>
           <p className="mt-2 text-[15px] leading-normal text-white/85 lg:text-[17px]">
             가입 없이 카메라만 켜면 시작할 수 있어요.
           </p>
         </div>
         <Button href="/signup" variant="white" full className="mt-6 lg:mt-0 lg:w-auto lg:px-8">
-          카메라로 알약 인식하기
+          스티커 스캔하기
         </Button>
       </div>
     </section>
@@ -28,7 +28,7 @@ export function Footer() {
       <div>
         <Image src="/puf-logo.png" alt="PUF" width={951} height={598} className="h-6 w-auto lg:h-7" />
         <p className="mt-6 hidden max-w-[560px] text-[13px] leading-relaxed text-gray-4 lg:block lg:mt-4">
-          본 서비스는 참고용 정보를 제공하며 의사 또는 약사의 진단을 대체하지 않습니다.
+          인증 결과는 스티커 패턴 대조에 기반하며, 제품의 품질이나 안전성을 보증하지 않습니다.
           <br />© 2026 PUF
         </p>
       </div>
@@ -37,7 +37,7 @@ export function Footer() {
         <a href="#" className="text-gray-5">개인정보처리방침</a>
       </div>
       <p className="mt-6 text-xs leading-relaxed text-gray-4 lg:hidden">
-        본 서비스는 참고용 정보를 제공하며 의사 또는 약사의 진단을 대체하지 않습니다.
+        인증 결과는 스티커 패턴 대조에 기반하며, 제품의 품질이나 안전성을 보증하지 않습니다.
         <br />© 2026 PUF
       </p>
     </footer>

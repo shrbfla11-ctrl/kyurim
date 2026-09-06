@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { UserMenu, type UserSummary } from "@/components/auth/UserMenu";
 
 const links = [
-  { href: "#search", label: "알약 검색" },
-  { href: "#log", label: "복약 기록" },
+  { href: "#verify", label: "정품 인증" },
+  { href: "#log", label: "스캔 기록" },
   { href: "#how", label: "이용 가이드" },
   { href: "#faq", label: "고객지원" },
 ];

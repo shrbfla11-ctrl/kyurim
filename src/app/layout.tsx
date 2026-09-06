@@ -17,7 +17,7 @@ const notoSansKr = Noto_Sans_KR({
 export const metadata: Metadata = {
   title: "PUF - Physical Unclonable Function",
   description:
-    "카메라를 알약에 비추면 식별 문자를 인식해 성분, 효능, 주의사항을 알려드려요.",
+    "복제 불가능한 패턴 스티커를 카메라로 스캔해 정품 여부와 제품 정보를 확인하세요.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

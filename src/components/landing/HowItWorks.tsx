@@ -3,18 +3,18 @@ import { CameraIcon, InfoIcon, ScanIcon } from "@/components/icons";
 const steps = [
   {
     Icon: CameraIcon,
-    title: "알약에 카메라를 비추세요",
-    desc: "밝은 곳에서 알약 앞면의 식별 문자가 보이도록 맞춰 주세요.",
+    title: "제품의 스티커에 카메라를 비추세요",
+    desc: "밝은 곳에서 PUF 스티커 전체가 사각형 안에 들어오도록 맞춰 주세요.",
   },
   {
     Icon: ScanIcon,
-    title: "식별 문자·색상·모양을 자동 인식",
-    desc: "각인과 코팅 문자를 읽고 색상·모양을 함께 비교해 후보 알약을 찾아요.",
+    title: "고유 패턴을 원본과 자동 대조",
+    desc: "스티커마다 다른 미세 패턴을 등록된 원본과 비교해 진위를 판별해요.",
   },
   {
     Icon: InfoIcon,
-    title: "성분·효능·주의사항 확인",
-    desc: "식약처 공공데이터 기반 정보를 바로 보여드려요.",
+    title: "정품 여부와 제품 정보 확인",
+    desc: "제조사가 등록한 제품 정보와 인증 결과를 바로 보여드려요.",
   },
 ];
 

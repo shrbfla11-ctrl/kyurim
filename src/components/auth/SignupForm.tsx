@@ -177,7 +177,7 @@ export function SignupForm() {
           <span><span className="font-semibold text-blue">[필수]</span> 개인정보처리방침 동의</span>
         </Checkbox>
         <Checkbox checked={agree.marketing} onChange={(e) => setAgree({ ...agree, marketing: e.target.checked })}>
-          <span><span className="font-semibold text-gray-4">[선택]</span> 복약 알림·소식 수신 동의</span>
+          <span><span className="font-semibold text-gray-4">[선택]</span> 제품 소식·이벤트 수신 동의</span>
         </Checkbox>
       </div>
 

@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "PUF - Physical Unclonable Function",
     short_name: "PUF",
-    description: "카메라를 알약에 비추면 성분, 효능, 주의사항을 알려드려요.",
+    description: "패턴 스티커를 스캔해 정품 여부와 제품 정보를 확인하세요.",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",

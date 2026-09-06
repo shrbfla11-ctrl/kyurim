@@ -13,7 +13,7 @@ export function PhoneMockup() {
         <div className="relative h-full w-full overflow-hidden rounded-[36px] bg-gradient-to-b from-[#E9EEF4] to-[#DAE1EA] lg:rounded-[38px]">
           <div className="absolute left-1/2 top-2.5 h-[26px] w-[88px] -translate-x-1/2 rounded-full bg-ink lg:top-3 lg:h-7 lg:w-24" />
           <div className="absolute inset-x-0 top-[52px] text-center text-xs font-semibold text-gray-5 lg:top-[60px] lg:text-[13px]">
-            알약을 사각형 안에 맞춰 주세요
+            스티커를 사각형 안에 맞춰 주세요
           </div>
 
           <div className="absolute left-10 top-[92px] h-[180px] w-[180px] lg:left-[38px] lg:top-[108px] lg:h-[200px] lg:w-[200px]">
@@ -22,9 +22,10 @@ export function PhoneMockup() {
             <span className={`${corner} bottom-0 left-0 rounded-bl-lg border-b border-l`} />
             <span className={`${corner} bottom-0 right-0 rounded-br-lg border-b border-r`} />
 
-            <div className="absolute left-1/2 top-1/2 flex h-[52px] w-[120px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-b from-white to-[#EEF1F5] shadow-[0_8px_20px_rgba(25,31,40,0.16),inset_0_-3px_6px_rgba(0,0,0,0.06)] lg:h-14 lg:w-[132px]">
-              <span className="font-inter text-sm font-bold tracking-[0.12em] text-gray-3 lg:text-[15px]">
-                TYL 500
+            <div className="absolute left-1/2 top-1/2 flex h-[104px] w-[104px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl bg-white shadow-[0_8px_20px_rgba(25,31,40,0.16)] lg:h-[116px] lg:w-[116px]">
+              <span className="absolute inset-2.5 rounded-xl bg-[radial-gradient(circle,#b8c0cb_1.2px,transparent_1.4px)] [background-size:9px_9px] opacity-70" />
+              <span className="relative rounded-md bg-white px-2 py-0.5 font-inter text-sm font-bold tracking-[0.12em] text-gray-3 lg:text-[15px]">
+                PUF
               </span>
               <span className="motion-safe-anim absolute inset-x-3.5 inset-y-3.5 animate-hl rounded-lg border-2 border-blue bg-blue/10 lg:inset-x-4" />
             </div>
@@ -39,18 +40,18 @@ export function PhoneMockup() {
           <div className="motion-safe-anim absolute inset-x-3 top-[296px] animate-card rounded-[20px] bg-white p-4 shadow-[0_8px_24px_rgba(25,31,40,0.12)] lg:top-[328px]">
             <div className="flex items-center justify-between">
               <span className="rounded-full bg-green-light px-2 py-1 text-[11px] font-bold text-green">
-                98% 일치
+                정품 인증
               </span>
-              <span className="text-[11px] text-gray-5">일반의약품</span>
+              <span className="text-[11px] text-gray-5">첫 스캔</span>
             </div>
             <div className="mt-2 text-base font-bold text-ink lg:text-[17px]">
-              타이레놀정 500mg
+              프리미엄 세럼 50ml
             </div>
             <div className="mt-0.5 text-xs text-gray-5">
-              아세트아미노펜 500mg · 한국얀센
+              PUF 코스메틱 · 제조번호 A2609-0815
             </div>
             <div className="mt-2 flex gap-1">
-              {["해열", "진통", "두통 완화"].map((t, i) => (
+              {["정품 확인", "유통 정상", "제조 2026.08"].map((t, i) => (
                 <span
                   key={t}
                   className={`rounded-lg bg-blue-light px-2 py-1 text-[11px] font-semibold text-blue ${i === 2 ? "hidden lg:inline" : ""}`}

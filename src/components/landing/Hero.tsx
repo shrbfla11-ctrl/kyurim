@@ -8,29 +8,29 @@ export function Hero() {
       <div>
         <div className="inline-flex h-8 items-center gap-2 rounded-full bg-blue-light px-3 text-[13px] font-semibold text-blue">
           <span className="h-1.5 w-1.5 rounded-full bg-blue" />
-          식약처 공공데이터 기반
+          복제 불가능한 패턴 스티커
         </div>
         <h1 className="mt-4 text-[32px] font-bold leading-[1.3] tracking-[-0.03em] text-ink lg:mt-6 lg:text-[40px]">
-          카메라를 알약에 비추면
+          카메라를 스티커에 비추면
           <br />
-          바로 알 수 있어요
+          정품인지 바로 알 수 있어요
         </h1>
         <p className="mt-4 text-base leading-normal text-gray-5 lg:max-w-[480px] lg:text-[17px]">
-          알약 표면의 식별 문자만으로 성분, 효능,
-          <br className="lg:hidden" /> 주의사항까지 한 번에 확인하세요.
+          제품에 붙은 PUF 스티커를 스캔하면
+          <br className="lg:hidden" /> 진위 여부와 제품 정보를 한 번에 확인하세요.
         </p>
 
         <div className="mt-6 flex flex-col gap-2 lg:mt-10 lg:flex-row">
           <Button href="#cta" icon={<CameraIcon size={22} />}>
-            카메라로 알약 인식하기
+            스티커 스캔하기
           </Button>
-          <Button href="#search" variant="secondary">
-            식별 문자로 검색
+          <Button href="#how" variant="secondary">
+            서비스 알아보기
           </Button>
         </div>
 
         <div className="mt-10 hidden gap-6 text-sm text-gray-5 lg:flex">
-          {["사진 미저장", "가입 없이 이용"].map((t) => (
+          {["촬영 이미지 미저장", "가입 없이 이용"].map((t) => (
             <span key={t} className="flex items-center gap-2">
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-light text-green">
                 <CheckIcon size={12} />

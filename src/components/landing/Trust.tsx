@@ -1,9 +1,9 @@
 import { ShieldIcon } from "@/components/icons";
 
 const stats = [
-  { value: "2.4만+", label: "등록 알약" },
-  { value: "98.2%", label: "인식 정확도" },
-  { value: "120만+", label: "누적 사용자" },
+  { value: "1:1", label: "스티커마다 고유 패턴" },
+  { value: "3초", label: "평균 인증 시간" },
+  { value: "24시간", label: "스캔 현황 모니터링" },
 ];
 
 export function Trust() {
@@ -15,12 +15,12 @@ export function Trust() {
             <ShieldIcon className="lg:h-7 lg:w-7" />
           </div>
           <h2 className="mt-4 text-2xl font-bold leading-[1.3] tracking-[-0.03em] lg:mt-6 lg:text-[32px]">
-            식품의약품안전처
+            복제할 수 없는 패턴이
             <br />
-            공공데이터를 기반으로 해요
+            정품을 증명해요
           </h2>
           <p className="mt-2 text-[15px] leading-normal text-gray-5 lg:mt-4 lg:max-w-[480px] lg:text-base">
-            의약품 식별 정보는 식약처 공개 데이터를 매일 갱신해 제공하며, 촬영한 사진은 서버에 저장하지 않아요.
+            PUF 스티커는 제조 과정에서 생기는 미세한 물리적 패턴을 이용해 똑같이 복제할 수 없어요. 촬영한 사진은 인증 처리 후 서버에 남기지 않아요.
           </p>
         </div>
 
