@@ -27,7 +27,7 @@ function initials(user: UserSummary) {
   return base ? base.slice(0, 1).toUpperCase() : "?";
 }
 
-const itemClass = "h-11 gap-3 rounded-xl px-3 text-[15px] font-medium text-ink [&_svg]:size-5 [&_svg]:text-gray-4";
+const itemClass = "h-11 cursor-pointer gap-3 rounded-xl px-3 text-[15px] font-medium text-ink transition-colors duration-300 hover:bg-gray-1 focus:bg-gray-1 [&_svg]:size-5 [&_svg]:text-gray-4";
 
 export function UserMenu({ user }: { user: UserSummary }) {
   const router = useRouter();
