@@ -130,16 +130,20 @@ export function InquiryForm({ email, defaultCategory }: { email: string; default
             </button>
             {files.map((f, i) => (
               <div key={`${f.name}-${i}`} className="relative h-[88px] w-[88px] overflow-hidden rounded-[14px] bg-gradient-to-br from-[#EEF5FF] to-[#DCEBFF]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={URL.createObjectURL(f)} alt="" className="h-full w-full object-cover" />
+                {f.type.startsWith("image/") ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={URL.createObjectURL(f)} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center px-2 text-center text-[11px] font-semibold text-gray-6">{f.name}</span>
+                )}
                 <button type="button" aria-label="삭제" onClick={() => setFiles(files.filter((_, j) => j !== i))} className="absolute right-1.5 top-1.5 flex h-[22px] w-[22px] items-center justify-center rounded-full bg-ink text-white hover:brightness-100">
                   <X size={12} strokeWidth={3} />
                 </button>
               </div>
             ))}
-            <input ref={fileRef} type="file" accept="image/png,image/jpeg" multiple className="hidden" onChange={(e) => { setFiles([...files, ...Array.from(e.target.files ?? [])].slice(0, MAX_FILES)); e.target.value = ""; }} />
+            <input ref={fileRef} type="file" accept="image/*,.pdf" multiple className="hidden" onChange={(e) => { setFiles([...files, ...Array.from(e.target.files ?? [])].slice(0, MAX_FILES)); e.target.value = ""; }} />
           </div>
-          <div className="mt-2 text-[13px] text-gray-4">PNG · JPG, 최대 10MB</div>
+          <div className="mt-2 text-[13px] text-gray-4">이미지 · PDF, 파일당 최대 10MB</div>
         </div>
 
         <label className="block">

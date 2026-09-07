@@ -24,7 +24,7 @@ export const relationships = {
 export type Database = {
   public: {
     Tables: {
-      profiles: Row<{ id: string; role: UserRole; name: string | null; marketing_opt_in: boolean; created_at: string; updated_at: string }>;
+      profiles: Row<{ id: string; role: UserRole; email: string | null; name: string | null; marketing_opt_in: boolean; created_at: string; updated_at: string }>;
       manufacturers: Row<{ id: string; name: string; contact_email: string | null; created_at: string }>;
       products: Row<{
         id: string; manufacturer_id: string; name: string; category: ProductCategory; description: string | null;

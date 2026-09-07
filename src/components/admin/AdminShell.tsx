@@ -1,16 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Activity, House, LayoutGrid, Package, ScanLine } from "lucide-react";
+import { Activity, House, LayoutGrid, MessageSquareText, Package, ScanLine } from "lucide-react";
 import type { UserSummary } from "@/components/auth/UserMenu";
 
-export type AdminNavKey = "dashboard" | "products" | "stickers" | "monitor";
+export type AdminNavKey = "dashboard" | "products" | "stickers" | "monitor" | "support";
 
 const nav: { key: AdminNavKey; href: string; label: string; Icon: typeof LayoutGrid }[] = [
   { key: "dashboard", href: "/admin", label: "대시보드", Icon: LayoutGrid },
   { key: "products", href: "/admin/products", label: "제품 관리", Icon: Package },
   { key: "stickers", href: "/admin/stickers", label: "스티커 발급", Icon: ScanLine },
   { key: "monitor", href: "/admin/monitor", label: "스캔 모니터링", Icon: Activity },
+  { key: "support", href: "/admin/support", label: "고객 지원", Icon: MessageSquareText },
 ];
 
 /** 관리자 공통 레이아웃: 좌측 사이드바 + 제목 영역. 데스크톱 전용입니다. */

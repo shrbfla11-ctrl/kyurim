@@ -31,7 +31,13 @@ export type Faq = { category: SupportCategory; q: string; a: string };
 
 export type { InquiryStatus };
 export type InquiryMessage = { id: string; from: "user" | "admin"; body: string; at: string; attachments: string[] };
-export type Inquiry = { id: string; ticket: string; category: SupportCategory; date: string; subject: string; preview: string; status: InquiryStatus; messages: InquiryMessage[] };
+export type InquiryUser = { name: string | null; email: string | null };
+export type Inquiry = {
+  id: string; ticket: string; category: SupportCategory; date: string; subject: string; preview: string;
+  status: InquiryStatus; messages: InquiryMessage[];
+  /** 관리자 화면에서만 채워지는 문의자 정보 */
+  user?: InquiryUser;
+};
 
 export function formatInquiryDate(iso: string, withTime = false) {
   const d = new Date(iso);
