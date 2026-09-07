@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CircleHelp, Image as ImageIcon, ShieldCheck, TriangleAlert, X, Zap } from "lucide-react";
+import { CircleHelp, Image as ImageIcon, ShieldCheck, TriangleAlert, X, Zap, ZapOff } from "lucide-react";
 
 type ScanState = "idle" | "scanning" | "error";
 
@@ -44,6 +44,17 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
           await videoRef.current.play().catch(() => undefined);
         }
         setHasCamera(true);
+        // 플래시(토치)는 기본으로 켭니다. 지원하지 않는 기기(iPhone 등)에서는 조용히 넘어갑니다.
+        const track = stream.getVideoTracks()[0];
+        const caps = track?.getCapabilities?.() as (MediaTrackCapabilities & { torch?: boolean }) | undefined;
+        if (caps?.torch) {
+          try {
+            await track.applyConstraints({ advanced: [{ torch: true } as MediaTrackConstraintSet] });
+            setTorch(true);
+          } catch {
+            /* 켜지지 않아도 촬영은 가능 */
+          }
+        }
       } catch {
         setHasCamera(false);
       }
@@ -116,19 +127,6 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
     if (file) analyze(file);
   }
 
-  async function toggleTorch() {
-    const track = streamRef.current?.getVideoTracks()[0];
-    if (!track) return;
-    const caps = track.getCapabilities?.() as MediaTrackCapabilities & { torch?: boolean };
-    if (!caps?.torch) return showError("플래시를 지원하지 않아요", "이 기기에서는 플래시를 켤 수 없어요.");
-    try {
-      await track.applyConstraints({ advanced: [{ torch: !torch } as MediaTrackConstraintSet] });
-      setTorch((v) => !v);
-    } catch {
-      /* 무시 */
-    }
-  }
-
   const scanning = state === "scanning";
   const isError = state === "error";
   const frameColor = isError ? "border-red" : "border-blue";
@@ -190,16 +188,29 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
           )}
         </div>
         <div className="h-6 text-sm text-white/70">
-          {scanning ? "움직이지 말고 잠시만 기다려 주세요" : isError ? "초점과 조명을 확인해 주세요" : !hasCamera ? "카메라를 켜거나 갤러리에서 이미지를 선택해 주세요" : ""}
+          {scanning
+            ? "움직이지 말고 잠시만 기다려 주세요"
+            : isError
+              ? "초점과 조명을 확인해 주세요"
+              : !hasCamera
+                ? "카메라를 켜거나 갤러리에서 이미지를 선택해 주세요"
+                : !torch
+                  ? "이 기기는 플래시를 지원하지 않아요. 밝은 곳에서 촬영해 주세요"
+                  : ""}
         </div>
       </div>
 
       {/* 하단 */}
       <div className="relative z-10 flex flex-col items-center gap-5 px-8 pb-6">
         <div className="flex w-full items-center justify-between">
-          <button type="button" aria-label="플래시" onClick={toggleTorch} disabled={!hasCamera} className={`${roundBtn} h-14 w-14 ${torch ? "bg-white/30" : ""}`}>
-            <Zap size={24} />
-          </button>
+          {/* 플래시는 패턴 인식에 필수라 항상 켜 둡니다. 상태만 표시하고 끌 수 없습니다. */}
+          <span
+            role="status"
+            aria-label={torch ? "플래시 켜짐" : "플래시 사용 불가"}
+            className={`flex h-14 w-14 items-center justify-center rounded-full ${torch ? "bg-amber text-ink" : "bg-white/12 text-white/40"}`}
+          >
+            {torch ? <Zap size={24} fill="currentColor" /> : <ZapOff size={24} />}
+          </span>
           <button
             type="button"
             aria-label="촬영"
