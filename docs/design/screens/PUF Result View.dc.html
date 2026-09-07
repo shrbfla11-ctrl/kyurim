@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display:flex;flex-direction:column;gap:16px;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28">
+  <!-- status -->
+  <div style="border-radius:24px;padding:32px 24px;background:{{ heroBg }};display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px">
+    <div style="width:72px;height:72px;border-radius:999px;background:{{ iconBg }};color:#fff;display:flex;align-items:center;justify-content:center">
+      <sc-if value="{{ isGenuine }}" hint-placeholder-val="{{ true }}"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+      <sc-if value="{{ isUnverified }}" hint-placeholder-val="{{ false }}"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.5-2.5 2-2.5 3.5M12 17h.01"></path></svg></sc-if>
+      <sc-if value="{{ isFake }}" hint-placeholder-val="{{ false }}"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17h.01"></path></svg></sc-if>
+    </div>
+    <div>
+      <span style="display:inline-block;font-size:13px;font-weight:700;color:{{ accent }};background:#fff;padding:6px 12px;border-radius:999px">{{ badge }}</span>
+      <h1 style="margin:12px 0 0;font-size:28px;line-height:1.3;font-weight:700;letter-spacing:-0.03em">{{ headline }}</h1>
+      <p style="margin:8px 0 0;font-size:15px;line-height:1.5;color:#4E5968">{{ desc }}</p>
+    </div>
+  </div>
+  <!-- product -->
+  <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;gap:16px;align-items:flex-start">
+    <div style="flex:none;width:88px;height:88px;border-radius:16px;background:linear-gradient(135deg,#EEF5FF,#DCEBFF);display:flex;align-items:center;justify-content:center"><div style="width:36px;height:56px;border-radius:8px 8px 12px 12px;background:linear-gradient(180deg,#fff,#E5E8EB);box-shadow:0 4px 12px rgba(25,31,40,0.12)"></div></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:13px;color:#8B95A1">스킨케어 · 세럼</div>
+      <div style="margin-top:4px;font-size:18px;font-weight:700;letter-spacing:-0.02em">글로우 리페어 세럼 50ml</div>
+      <div style="margin-top:4px;font-size:14px;color:#6B7684">루미에르 코스메틱 · LOT <span style="font-family:Inter,sans-serif">LM24-0913</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px">
+        <sc-for list="{{ tags }}" as="t" hint-placeholder-count="2"><span style="font-size:12px;font-weight:600;color:{{ t.color }};background:{{ t.bg }};padding:6px 10px;border-radius:8px">{{ t.label }}</span></sc-for>
+      </div>
+    </div>
+  </div>
+  <!-- verification details -->
+  <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+    <div style="font-size:16px;font-weight:700">검증 상세</div>
+    <div style="display:flex;flex-direction:column;margin-top:8px">
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #F2F4F6;font-size:15px"><span style="color:#6B7684">상태</span><span style="font-weight:600;color:{{ accent }}">{{ badge }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #F2F4F6;font-size:15px"><span style="color:#6B7684">이 스티커 누적 스캔</span><span style="font-weight:600;font-family:Inter,sans-serif;color:{{ countColor }}">{{ count }}회</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #F2F4F6;font-size:15px"><span style="color:#6B7684">최초 스캔</span><span style="font-weight:600;font-family:Inter,sans-serif">{{ firstScan }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;font-size:15px"><span style="color:#6B7684">이번 스캔</span><span style="font-weight:600;font-family:Inter,sans-serif">2026.09.07 14:32</span></div>
+    </div>
+    <sc-if value="{{ showReuse }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:8px;padding:16px;border-radius:16px;background:#FFF8E1;display:flex;gap:10px;align-items:flex-start">
+        <svg style="flex:none;margin-top:1px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A6116" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17h.01"></path></svg>
+        <div><div style="font-size:14px;font-weight:700;color:#8A6116">스캔 횟수가 많아요</div><p style="margin:4px 0 0;font-size:14px;line-height:1.5;color:#6B5A2E">이 스티커는 여러 번 스캔되었어요. 스티커가 재사용되었을 가능성이 있으니 구매처를 확인해 주세요.</p></div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isFake }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:8px;padding:16px;border-radius:16px;background:#FEECEE;display:flex;gap:10px;align-items:flex-start">
+        <svg style="flex:none;margin-top:1px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F04452" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+        <div><div style="font-size:14px;font-weight:700;color:#D6303E">구매처에 문의해 주세요</div><p style="margin:4px 0 0;font-size:14px;line-height:1.5;color:#8C3A41">등록된 정품 패턴과 일치하지 않아요. 제조사 고객센터 또는 구매처에 제품 상태를 확인해 보세요.</p></div>
+      </div>
+    </sc-if>
+  </div>
+  <!-- product info accordion -->
+  <div style="background:#fff;border-radius:20px;padding:8px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+    <sc-for list="{{ info }}" as="f" hint-placeholder-count="3">
+      <div style="border-bottom:1px solid {{ f.line }}">
+        <button onClick="{{ f.toggle }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;background:none;border:0;cursor:pointer;text-align:left">
+          <span style="font-size:16px;font-weight:600;color:#191F28">{{ f.q }}</span>
+          <span style="flex:none;width:28px;height:28px;border-radius:999px;background:#F2F4F6;display:flex;align-items:center;justify-content:center;color:#6B7684;font-size:16px;transition:transform .3s;transform:{{ f.rot }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span>
+        </button>
+        <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><div style="padding:0 0 16px;font-size:15px;line-height:1.6;color:#6B7684">{{ f.a }}</div></sc-if>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:375,&quot;height&quot;:900},&quot;outcome&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;genuine&quot;,&quot;options&quot;:[&quot;genuine&quot;,&quot;unverified&quot;,&quot;fake&quot;],&quot;tsType&quot;:&quot;'genuine'|'unverified'|'fake'&quot;},&quot;forceReuse&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { open: 0 };
+  data = {
+    genuine: { badge: '정품 확인', headline: '정품이에요', desc: '등록된 원본 패턴과 일치해요. 안심하고 사용하세요.', heroBg: '#E6F8EF', iconBg: '#14B866', accent: '#14B866', count: 1, firstScan: '2026.09.07 14:32', tags: [['정품 인증', '#14B866', '#E6F8EF'], ['첫 스캔', '#3182F6', '#E8F3FF'], ['유통 정상', '#4E5968', '#F2F4F6']] },
+    unverified: { badge: '확인 불가', headline: '판별할 수 없어요', desc: '패턴을 충분히 읽지 못했어요. 밝은 곳에서 다시 스캔해 주세요.', heroBg: '#FFF8E1', iconBg: '#F5A623', accent: '#B57A0B', count: 3, firstScan: '2026.08.21 09:14', tags: [['재스캔 필요', '#B57A0B', '#FFF8E1'], ['유통 정상', '#4E5968', '#F2F4F6']] },
+    fake: { badge: '위조 의심', headline: '위조가 의심돼요', desc: '등록된 원본 패턴과 일치하지 않아요. 구매처에 문의해 주세요.', heroBg: '#FEECEE', iconBg: '#F04452', accent: '#F04452', count: 27, firstScan: '2026.05.02 18:47', tags: [['패턴 불일치', '#F04452', '#FEECEE'], ['스캔 27회', '#B57A0B', '#FFF8E1']] }
+  };
+  info = [
+    { q: '제품 설명', a: '히알루론산과 나이아신아마이드를 담은 데일리 리페어 세럼이에요. 건조하고 거칠어진 피부 결을 정돈해 줍니다. (제조사 제공 정보)' },
+    { q: '전성분', a: '정제수, 글리세린, 나이아신아마이드, 부틸렌글라이콜, 소듐하이알루로네이트, 판테놀, 알란토인, 1,2-헥산다이올' },
+    { q: '사용 방법', a: '세안 후 토너로 피부를 정돈한 뒤, 적당량을 얼굴 전체에 고르게 펴 바르고 가볍게 두드려 흡수시켜 주세요.' }
+  ];
+  renderVals() {
+    const s = this.props.outcome ?? 'genuine', d = this.data[s] ?? this.data.genuine, o = this.state.open;
+    return {
+      ...d, isGenuine: s === 'genuine', isUnverified: s === 'unverified', isFake: s === 'fake',
+      showReuse: d.count >= 10 && s !== 'fake' || (this.props.forceReuse ?? false),
+      countColor: d.count >= 10 ? '#F04452' : '#191F28',
+      tags: d.tags.map(([label, color, bg]) => ({ label, color, bg })),
+      info: this.info.map((f, i) => ({ ...f, open: o === i, rot: o === i ? 'rotate(180deg)' : 'rotate(0)', line: i === this.info.length - 1 ? 'transparent' : '#F2F4F6', toggle: () => this.setState({ open: o === i ? -1 : i }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

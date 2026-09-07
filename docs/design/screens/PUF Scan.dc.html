@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E5E8EB;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+*{box-sizing:border-box}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+button{font-family:inherit}
+@keyframes pufSpin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div style="display:flex;flex-direction:column;gap:80px;padding:80px;align-items:flex-start">
+  <div style="display:flex;gap:48px;align-items:flex-start">
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">SCAN · MOBILE · IDLE</div>
+      <div data-screen-label="스캔 대기" style="width:375px;height:812px;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+        <div style="flex:1;min-height:0"><dc-import name="PUF Scan View" style="height:100%;display:block" state="idle" hint-size="100%,100%"></dc-import></div>
+        <dc-import name="PUF Tab Bar" active="scan" dark="{{ true }}" hint-size="100%,84px"></dc-import>
+      </div>
+    </div>
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">SCAN · MOBILE · ANALYZING</div>
+      <div data-screen-label="스캔 분석중" style="width:375px;height:812px;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+        <div style="flex:1;min-height:0"><dc-import name="PUF Scan View" style="height:100%;display:block" state="scanning" hint-size="100%,100%"></dc-import></div>
+        <dc-import name="PUF Tab Bar" active="scan" dark="{{ true }}" hint-size="100%,84px"></dc-import>
+      </div>
+    </div>
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">SCAN · MOBILE · ERROR TOAST</div>
+      <div data-screen-label="스캔 실패" style="width:375px;height:812px;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+        <div style="flex:1;min-height:0"><dc-import name="PUF Scan View" style="height:100%;display:block" state="error" hint-size="100%,100%"></dc-import></div>
+        <dc-import name="PUF Tab Bar" active="scan" dark="{{ true }}" hint-size="100%,84px"></dc-import>
+      </div>
+    </div>
+  </div>
+  <div style="width:1440px">
+    <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">SCAN · DESKTOP 1440 · ANALYZING</div>
+    <div data-screen-label="스캔 데스크톱" style="width:1440px;height:900px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+      <dc-import name="PUF Top Bar" active="verify" hint-size="100%,72px"></dc-import>
+      <div style="flex:1;padding:48px 80px;display:grid;grid-template-columns:1fr 400px;gap:48px;align-items:stretch;background:#F2F4F6">
+        <div style="border-radius:24px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);height:100%"><dc-import name="PUF Scan View" style="height:100%;display:block" state="scanning" frame-size="320px" hint-size="100%,100%"></dc-import></div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+            <div style="font-size:13px;font-weight:700;color:#3182F6">촬영 팁</div>
+            <div style="margin-top:16px;display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:32px;height:32px;border-radius:10px;background:#E8F3FF;color:#3182F6;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-size:14px;font-weight:700">1</span><div><div style="font-size:16px;font-weight:700">밝은 곳에서 촬영하세요</div><div style="margin-top:4px;font-size:14px;line-height:1.5;color:#6B7684">그림자나 반사광이 패턴을 가리지 않게 해 주세요.</div></div></div>
+              <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:32px;height:32px;border-radius:10px;background:#E8F3FF;color:#3182F6;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-size:14px;font-weight:700">2</span><div><div style="font-size:16px;font-weight:700">스티커를 정면으로</div><div style="margin-top:4px;font-size:14px;line-height:1.5;color:#6B7684">사각형 안에 스티커 전체가 들어오도록 맞춰 주세요.</div></div></div>
+              <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:32px;height:32px;border-radius:10px;background:#E8F3FF;color:#3182F6;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-size:14px;font-weight:700">3</span><div><div style="font-size:16px;font-weight:700">잠시 고정하세요</div><div style="margin-top:4px;font-size:14px;line-height:1.5;color:#6B7684">패턴 대조에 1~2초가 걸려요.</div></div></div>
+            </div>
+          </div>
+          <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;gap:12px;align-items:flex-start">
+            <span style="flex:none;width:40px;height:40px;border-radius:12px;background:#E6F8EF;color:#14B866;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path><path d="M9 12l2 2 4-4"></path></svg></span>
+            <div><div style="font-size:16px;font-weight:700">이미지는 저장되지 않아요</div><div style="margin-top:4px;font-size:14px;line-height:1.5;color:#6B7684">촬영 이미지는 패턴 대조 직후 삭제되며 서버에 남지 않아요.</div></div>
+          </div>
+          <button style="margin-top:auto;height:44px;border:0;border-radius:14px;background:#E8F3FF;color:#3182F6;font-size:15px;font-weight:700;cursor:pointer;transition:background .3s" style-hover="background:#D4E8FF">갤러리에서 이미지 선택</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

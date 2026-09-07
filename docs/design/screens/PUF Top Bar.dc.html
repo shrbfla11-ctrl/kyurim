@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="height:72px;padding:0 80px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #F2F4F6;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;position:relative">
+  <div style="display:flex;align-items:center;gap:48px">
+    <img src="assets/puf-logo.png" alt="PUF" style="height:28px;width:auto;display:block">
+    <div style="display:flex;gap:32px;font-size:16px;font-weight:600">
+      <a href="#" style="color:{{ c1 }};transition:color .3s" style-hover="color:#3182F6">정품 확인</a>
+      <a href="#" style="color:{{ c2 }};transition:color .3s" style-hover="color:#3182F6">스캔 기록</a>
+      <a href="#" style="color:{{ c3 }};transition:color .3s" style-hover="color:#3182F6">이용 가이드</a>
+      <a href="#" style="color:{{ c4 }};transition:color .3s" style-hover="color:#3182F6">고객센터</a>
+    </div>
+  </div>
+  <button onClick="{{ toggle }}" style="width:40px;height:40px;border-radius:999px;border:0;padding:0;background:#E8F3FF;color:#3182F6;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .3s" style-hover="background:#D4E8FF">민</button>
+  <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;right:80px;top:64px;width:200px;background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(25,31,40,0.12);padding:8px;z-index:10">
+      <div style="padding:12px 12px 8px;border-bottom:1px solid #F2F4F6;margin-bottom:4px"><div style="font-size:15px;font-weight:700;color:#191F28">김민지</div><div style="font-size:13px;color:#8B95A1;margin-top:2px">minji@puf.kr</div></div>
+      <a href="#" style="display:block;padding:12px;border-radius:10px;font-size:15px;color:#191F28;transition:background .3s" style-hover="background:#F2F4F6">내 프로필</a>
+      <a href="#" style="display:block;padding:12px;border-radius:10px;font-size:15px;color:#191F28;transition:background .3s" style-hover="background:#F2F4F6">관리자</a>
+      <a href="#" style="display:block;padding:12px;border-radius:10px;font-size:15px;color:#6B7684;transition:background .3s" style-hover="background:#F2F4F6">로그아웃</a>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:72},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;verify&quot;,&quot;options&quot;:[&quot;verify&quot;,&quot;history&quot;,&quot;guide&quot;,&quot;support&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;menuOpen&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { open: false };
+  renderVals() {
+    const a = this.props.active ?? 'verify';
+    const c = k => a === k ? '#3182F6' : '#191F28';
+    return { c1: c('verify'), c2: c('history'), c3: c('guide'), c4: c('support'), open: this.props.menuOpen ?? this.state.open, toggle: () => this.setState(s => ({ open: !s.open })) };
+  }
+}
+</script>
+</body>
+</html>

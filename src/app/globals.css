@@ -23,6 +23,11 @@
   --color-amber-bg: #fff7e0;
   --color-amber-ink: #8a6116;
   --color-amber-text: #6b5a2e;
+  --color-amber: #f5a623;
+  --color-amber-dark: #b57a0b;
+  --color-red-light: #feecee;
+  --color-red-dark: #d6303e;
+  --color-red-text: #8c3a41;
 
   --font-sans: Pretendard, var(--font-inter), var(--font-noto-kr), sans-serif;
   --font-inter: var(--font-inter), sans-serif;
@@ -35,6 +40,9 @@
   --animate-check: kCheck 6s ease-in-out infinite;
   --animate-card: kCard 6s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
   --animate-spin-fast: kSpin 0.8s linear infinite;
+  --animate-scan-line: kScanLine 2s ease-in-out infinite;
+  --animate-pulse-dot: kPulse 1s ease-in-out infinite;
+  --animate-toast: kToast 0.3s ease-out;
 
   @keyframes kScan {
     0% { top: 0; opacity: 1; }
@@ -57,6 +65,19 @@
   }
   @keyframes kSpin {
     to { transform: rotate(360deg); }
+  }
+  @keyframes kScanLine {
+    0% { top: 0; }
+    50% { top: calc(100% - 2px); }
+    100% { top: 0; }
+  }
+  @keyframes kPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+  @keyframes kToast {
+    from { transform: translateY(-16px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
   @keyframes kCard {
     0%, 52% { transform: translateY(110%); opacity: 0; }

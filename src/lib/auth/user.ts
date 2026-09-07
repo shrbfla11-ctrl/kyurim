@@ -23,5 +23,7 @@ export async function getUserSummary(): Promise<UserSummary | null> {
     name: pick("name", "full_name", "preferred_username", "nickname") ?? displayNameFor(user.email),
     avatarUrl: pick("avatar_url", "picture"),
     isAdmin: isAdminEmail(user.email),
+    providers: ((user.app_metadata?.providers as string[] | undefined) ?? []).filter(Boolean),
+    marketingOptIn: meta.marketing_opt_in === true,
   };
 }

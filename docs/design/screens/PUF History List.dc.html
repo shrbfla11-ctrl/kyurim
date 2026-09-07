@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display:flex;flex-direction:column;gap:16px;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28">
+  <div style="position:relative">
+    <svg style="position:absolute;left:16px;top:16px" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B95A1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg>
+    <input type="search" placeholder="제품명, 제조사 검색" style="width:100%;height:52px;padding:0 16px 0 44px;border-radius:14px;border:1.5px solid transparent;background:#F2F4F6;font-size:15px;color:#191F28;outline:none;font-family:inherit" style-focus="border-color:#3182F6;background:#fff">
+  </div>
+  <div style="display:flex;gap:8px;overflow-x:auto">
+    <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.pick }}" style="flex:none;height:36px;padding:0 14px;border:0;border-radius:999px;background:{{ c.bg }};color:{{ c.color }};font-size:14px;font-weight:600;cursor:pointer;transition:background .3s;font-family:inherit">{{ c.label }}</button></sc-for>
+  </div>
+  <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <sc-for list="{{ items }}" as="it" hint-placeholder-count="4">
+        <a href="#" style="display:flex;gap:14px;align-items:center;padding:16px;background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);color:#191F28;transition:transform .3s,box-shadow .3s" style-hover="transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08)">
+          <span style="flex:none;width:56px;height:56px;border-radius:14px;background:{{ it.thumbBg }};display:flex;align-items:center;justify-content:center"><span style="width:22px;height:34px;border-radius:5px 5px 8px 8px;background:linear-gradient(180deg,#fff,#E5E8EB);box-shadow:0 3px 8px rgba(25,31,40,0.12);display:block"></span></span>
+          <span style="flex:1;min-width:0"><span style="display:block;font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.name }}</span><span style="display:block;margin-top:4px;font-size:13px;color:#8B95A1">{{ it.maker }} · <span style="font-family:Inter,sans-serif">{{ it.time }}</span></span></span>
+          <span style="flex:none;font-size:12px;font-weight:700;color:{{ it.color }};background:{{ it.bg }};padding:6px 10px;border-radius:999px">{{ it.badge }}</span>
+        </a>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:64px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px">
+      <div style="position:relative;width:120px;height:120px">
+        <div style="position:absolute;inset:0;border-radius:999px;background:#E8F3FF"></div>
+        <div style="position:absolute;left:30px;top:30px;width:60px;height:60px">
+          <div style="position:absolute;top:0;left:0;width:16px;height:16px;border-top:3px solid #3182F6;border-left:3px solid #3182F6;border-radius:5px 0 0 0"></div>
+          <div style="position:absolute;top:0;right:0;width:16px;height:16px;border-top:3px solid #3182F6;border-right:3px solid #3182F6;border-radius:0 5px 0 0"></div>
+          <div style="position:absolute;bottom:0;left:0;width:16px;height:16px;border-bottom:3px solid #3182F6;border-left:3px solid #3182F6;border-radius:0 0 0 5px"></div>
+          <div style="position:absolute;bottom:0;right:0;width:16px;height:16px;border-bottom:3px solid #3182F6;border-right:3px solid #3182F6;border-radius:0 0 5px 0"></div>
+          <div style="position:absolute;left:14px;top:14px;width:32px;height:32px;border-radius:8px;background:#fff;box-shadow:0 4px 12px rgba(49,130,246,0.25);transform:rotate(-6deg)"></div>
+        </div>
+      </div>
+      <div><div style="font-size:20px;font-weight:700;letter-spacing:-0.02em">아직 스캔 기록이 없어요</div><p style="margin:8px 0 0;font-size:15px;line-height:1.5;color:#6B7684">첫 제품을 스캔하면 결과가 여기에 저장돼요.</p></div>
+      <button style="height:56px;padding:0 28px;border:0;border-radius:16px;background:#3182F6;color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:background .3s;font-family:inherit" style-hover="background:#1B64DA">첫 스캔 시작하기</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:375,&quot;height&quot;:700},&quot;empty&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { filter: 'all' };
+  kinds = { genuine: ['정품', '#14B866', '#E6F8EF'], unverified: ['확인 불가', '#B57A0B', '#FFF8E1'], fake: ['위조 의심', '#F04452', '#FEECEE'] };
+  rows = [
+    ['글로우 리페어 세럼 50ml', '루미에르 코스메틱', '오늘 14:32', 'genuine'],
+    ['에어핏 무선 이어버드', '소닉웨이브', '오늘 09:10', 'genuine'],
+    ['프리미엄 오메가3 90캡슐', '헬씨라이프', '어제 21:04', 'unverified'],
+    ['시그니처 레더 카드지갑', '메종 도레', '09.03 16:48', 'fake'],
+    ['하이드라 선크림 SPF50+', '루미에르 코스메틱', '08.28 11:20', 'genuine'],
+    ['그래핀 보조배터리 10000', '볼트랩', '08.21 09:14', 'genuine']
+  ];
+  renderVals() {
+    const f = this.state.filter, empty = !!this.props.empty;
+    const labels = { all: '전체', genuine: '정품', unverified: '확인 불가', fake: '위조 의심' };
+    const items = this.rows.filter(r => f === 'all' || r[3] === f).map(([name, maker, time, k]) => { const [badge, color, bg] = this.kinds[k]; return { name, maker, time, badge, color, bg, thumbBg: k === 'fake' ? 'linear-gradient(135deg,#FEECEE,#FBD9DC)' : 'linear-gradient(135deg,#EEF5FF,#DCEBFF)' }; });
+    return {
+      chips: Object.keys(labels).map(k => ({ label: labels[k], bg: f === k ? '#191F28' : '#F2F4F6', color: f === k ? '#fff' : '#4E5968', pick: () => this.setState({ filter: k }) })),
+      items, hasItems: !empty && items.length > 0, isEmpty: empty || items.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -19,6 +19,9 @@ export type UserSummary = {
   name: string | null;
   avatarUrl: string | null;
   isAdmin: boolean;
+  /** 연결된 로그인 방식 (email, google, kakao ...) */
+  providers: string[];
+  marketingOptIn: boolean;
 };
 
 // 이름 또는 이메일 앞 글자로 임시 프로필 이니셜을 만듭니다.

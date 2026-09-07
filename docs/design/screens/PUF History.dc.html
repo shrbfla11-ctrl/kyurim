@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E5E8EB;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+*{box-sizing:border-box}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="display:flex;flex-direction:column;gap:80px;padding:80px;align-items:flex-start">
+  <div style="display:flex;gap:48px;align-items:flex-start">
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">HISTORY · MOBILE</div>
+      <div data-screen-label="기록 목록" style="width:375px;height:812px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+        <div style="padding:16px 20px 8px"><h1 style="margin:0;font-size:28px;font-weight:700;letter-spacing:-0.03em">스캔 기록</h1></div>
+        <div style="flex:1;min-height:0;overflow:auto;padding:8px 20px 24px"><dc-import name="PUF History List" hint-size="100%,600px"></dc-import></div>
+        <dc-import name="PUF Tab Bar" active="history" hint-size="100%,84px"></dc-import>
+      </div>
+    </div>
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">HISTORY · MOBILE · EMPTY</div>
+      <div data-screen-label="기록 비어있음" style="width:375px;height:812px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+        <div style="padding:16px 20px 8px"><h1 style="margin:0;font-size:28px;font-weight:700;letter-spacing:-0.03em">스캔 기록</h1></div>
+        <div style="flex:1;min-height:0;overflow:auto;padding:8px 20px 24px"><dc-import name="PUF History List" empty="{{ true }}" hint-size="100%,600px"></dc-import></div>
+        <dc-import name="PUF Tab Bar" active="history" hint-size="100%,84px"></dc-import>
+      </div>
+    </div>
+  </div>
+  <div style="width:1440px">
+    <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">HISTORY · DESKTOP 1440</div>
+    <div data-screen-label="기록 데스크톱" style="width:1440px;min-height:900px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+      <dc-import name="PUF Top Bar" active="history" hint-size="100%,72px"></dc-import>
+      <div style="padding:48px 80px 80px;max-width:1040px">
+        <h1 style="margin:0;font-size:32px;font-weight:700;letter-spacing:-0.03em">스캔 기록</h1>
+        <p style="margin:8px 0 0;font-size:16px;color:#6B7684">저장한 정품 확인 결과를 다시 볼 수 있어요.</p>
+        <div style="margin-top:32px"><dc-import name="PUF History List" hint-size="100%,600px"></dc-import></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

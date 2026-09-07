@@ -7,14 +7,16 @@ import { MenuIcon } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
 import { UserMenu, type UserSummary } from "@/components/auth/UserMenu";
 
-const links = [
-  { href: "#verify", label: "정품 인증" },
-  { href: "#log", label: "스캔 기록" },
-  { href: "#how", label: "이용 가이드" },
-  { href: "#faq", label: "고객지원" },
+export type NavKey = "verify" | "history" | "guide" | "support";
+
+const links: { key: NavKey; href: string; label: string }[] = [
+  { key: "verify", href: "/scan", label: "정품 확인" },
+  { key: "history", href: "/history", label: "스캔 기록" },
+  { key: "guide", href: "/#how", label: "이용 가이드" },
+  { key: "support", href: "/#faq", label: "고객센터" },
 ];
 
-export function Nav({ user }: { user: UserSummary | null }) {
+export function Nav({ user, active }: { user: UserSummary | null; active?: NavKey }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -33,9 +35,9 @@ export function Nav({ user }: { user: UserSummary | null }) {
 
         <nav className="hidden gap-10 text-base font-semibold lg:flex">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-ink hover:text-blue">
+            <Link key={l.key} href={l.href} className={`${active === l.key ? "text-blue" : "text-ink"} hover:text-blue`}>
               {l.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -62,14 +64,14 @@ export function Nav({ user }: { user: UserSummary | null }) {
       {open && (
         <nav className="flex flex-col border-t border-gray-1 py-2 lg:hidden">
           {links.map((l) => (
-            <a
-              key={l.href}
+            <Link
+              key={l.key}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="py-3 text-base font-semibold text-ink"
+              className={`py-3 text-base font-semibold ${active === l.key ? "text-blue" : "text-ink"}`}
             >
               {l.label}
-            </a>
+            </Link>
           ))}
         </nav>
       )}

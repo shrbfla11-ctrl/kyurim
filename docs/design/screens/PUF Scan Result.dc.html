@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E5E8EB;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+*{box-sizing:border-box}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="display:flex;flex-direction:column;gap:80px;padding:80px;align-items:flex-start">
+  <div style="display:flex;gap:48px;align-items:flex-start">
+
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">RESULT · MOBILE · 정품</div>
+      <div data-screen-label="결과 정품" style="width:375px;background:#F2F4F6;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+        <div style="height:56px;padding:0 8px;display:flex;align-items:center;justify-content:space-between;background:#F2F4F6"><button aria-label="뒤로" style="width:44px;height:44px;border:0;background:none;color:#191F28;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button><span style="font-size:16px;font-weight:600">스캔 결과</span><span style="width:44px"></span></div>
+        <div style="padding:8px 16px 24px"><dc-import name="PUF Result View" outcome="genuine" hint-size="100%,900px"></dc-import></div>
+        <div style="position:sticky;bottom:0;padding:12px 16px 24px;background:rgba(242,244,246,0.92);backdrop-filter:blur(8px);display:flex;gap:8px">
+          <button style="flex:1;height:56px;border:0;border-radius:16px;background:#3182F6;color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:background .3s" style-hover="background:#1B64DA">다시 스캔</button>
+          <button aria-label="기록 저장" style="width:56px;height:56px;border:0;border-radius:16px;background:#E8F3FF;color:#3182F6;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s" style-hover="background:#D4E8FF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v17l-6-4-6 4z"></path></svg></button>
+          <button aria-label="공유" style="width:56px;height:56px;border:0;border-radius:16px;background:#E8F3FF;color:#3182F6;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s" style-hover="background:#D4E8FF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M12 15V3M8 7l4-4 4 4"></path></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">RESULT · MOBILE · 확인 불가</div>
+      <div data-screen-label="결과 확인불가" style="width:375px;background:#F2F4F6;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+        <div style="height:56px;padding:0 8px;display:flex;align-items:center;justify-content:space-between;background:#F2F4F6"><button aria-label="뒤로" style="width:44px;height:44px;border:0;background:none;color:#191F28;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button><span style="font-size:16px;font-weight:600">스캔 결과</span><span style="width:44px"></span></div>
+        <div style="padding:8px 16px 24px"><dc-import name="PUF Result View" outcome="unverified" hint-size="100%,900px"></dc-import></div>
+        <div style="position:sticky;bottom:0;padding:12px 16px 24px;background:rgba(242,244,246,0.92);backdrop-filter:blur(8px);display:flex;gap:8px">
+          <button style="flex:1;height:56px;border:0;border-radius:16px;background:#3182F6;color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:background .3s" style-hover="background:#1B64DA">다시 스캔</button>
+          <button aria-label="공유" style="width:56px;height:56px;border:0;border-radius:16px;background:#E8F3FF;color:#3182F6;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s" style-hover="background:#D4E8FF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M12 15V3M8 7l4-4 4 4"></path></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">RESULT · MOBILE · 위조 의심</div>
+      <div data-screen-label="결과 위조의심" style="width:375px;background:#F2F4F6;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+        <div style="height:56px;padding:0 8px;display:flex;align-items:center;justify-content:space-between;background:#F2F4F6"><button aria-label="뒤로" style="width:44px;height:44px;border:0;background:none;color:#191F28;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button><span style="font-size:16px;font-weight:600">스캔 결과</span><span style="width:44px"></span></div>
+        <div style="padding:8px 16px 24px"><dc-import name="PUF Result View" outcome="fake" hint-size="100%,900px"></dc-import></div>
+        <div style="position:sticky;bottom:0;padding:12px 16px 24px;background:rgba(242,244,246,0.92);backdrop-filter:blur(8px);display:flex;gap:8px">
+          <button style="flex:1;height:56px;border:0;border-radius:16px;background:#3182F6;color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:background .3s" style-hover="background:#1B64DA">다시 스캔</button>
+          <button aria-label="기록 저장" style="width:56px;height:56px;border:0;border-radius:16px;background:#E8F3FF;color:#3182F6;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s" style-hover="background:#D4E8FF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v17l-6-4-6 4z"></path></svg></button>
+          <button aria-label="공유" style="width:56px;height:56px;border:0;border-radius:16px;background:#E8F3FF;color:#3182F6;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s" style-hover="background:#D4E8FF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M12 15V3M8 7l4-4 4 4"></path></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width:1440px">
+    <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">RESULT · DESKTOP 1440 · 정품</div>
+    <div data-screen-label="결과 데스크톱" style="width:1440px;background:#F2F4F6;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+      <dc-import name="PUF Top Bar" active="verify" hint-size="100%,72px"></dc-import>
+      <div style="padding:48px 80px 80px;display:grid;grid-template-columns:1fr 360px;gap:48px;align-items:start">
+        <dc-import name="PUF Result View" outcome="genuine" hint-size="100%,900px"></dc-import>
+        <div style="position:sticky;top:24px;display:flex;flex-direction:column;gap:16px">
+          <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column;gap:8px">
+            <button style="height:56px;border:0;border-radius:16px;background:#3182F6;color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:background .3s" style-hover="background:#1B64DA">다시 스캔</button>
+            <button style="height:44px;border:0;border-radius:14px;background:#E8F3FF;color:#3182F6;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .3s" style-hover="background:#D4E8FF"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v17l-6-4-6 4z"></path></svg>기록에 저장</button>
+            <button style="height:44px;border:0;border-radius:14px;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .3s" style-hover="background:#E5E8EB"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M12 15V3M8 7l4-4 4 4"></path></svg>공유하기</button>
+          </div>
+          <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;gap:12px;align-items:flex-start">
+            <span style="flex:none;width:40px;height:40px;border-radius:12px;background:#E6F8EF;color:#14B866;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></span>
+            <div><div style="font-size:15px;font-weight:700">이미지는 저장되지 않았어요</div><div style="margin-top:4px;font-size:14px;line-height:1.5;color:#6B7684">촬영 이미지는 패턴 대조 직후 삭제되었어요.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

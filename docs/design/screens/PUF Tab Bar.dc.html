@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="height:84px;padding:8px 16px 20px;background:{{ bg }};border-top:1px solid {{ line }};display:grid;grid-template-columns:1fr 1fr 1fr 1fr;align-items:end;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif">
+  <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;height:56px;justify-content:center;font-size:11px;font-weight:600;color:{{ cHome }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"></path></svg>홈</a>
+  <a href="#" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:56px;font-size:11px;font-weight:700;color:{{ cScan }}"><span style="width:56px;height:56px;margin-top:-28px;border-radius:999px;background:#3182F6;box-shadow:0 8px 20px rgba(49,130,246,0.4);display:flex;align-items:center;justify-content:center;color:#fff;transition:background .3s" style-hover="background:#1B64DA"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3"></path></svg></span>스캔</a>
+  <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;height:56px;justify-content:center;font-size:11px;font-weight:600;color:{{ cHist }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>기록</a>
+  <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;height:56px;justify-content:center;font-size:11px;font-weight:600;color:{{ cMe }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0116 0"></path></svg>MY</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:375,&quot;height&quot;:84},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;scan&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;scan&quot;,&quot;history&quot;,&quot;me&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;dark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const a = this.props.active ?? 'scan', dark = !!this.props.dark;
+    const on = '#3182F6', off = dark ? '#8B95A1' : '#8B95A1';
+    return { bg: dark ? '#191F28' : '#fff', line: dark ? 'rgba(255,255,255,0.08)' : '#F2F4F6', cHome: a === 'home' ? on : off, cScan: a === 'scan' ? on : off, cHist: a === 'history' ? on : off, cMe: a === 'me' ? on : off };
+  }
+}
+</script>
+</body>
+</html>
