@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { Camera, Check, ChevronDown, ChevronRight, CircleHelp, Clock, Info, Lock, ScanLine, SearchX, ShieldCheck, TriangleAlert, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { SearchInput } from "@/components/ui/SearchInput";
-import { guideSections, guideSteps, type GuideSection } from "@/lib/support/mock";
+import { guideSections, guideSteps, type GuideSection } from "@/lib/support/content";
 
 const card = "rounded-[20px] bg-white shadow-card";
 

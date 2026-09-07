@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Download } from "lucide-react";
 import { OutcomeBadge, TableHead, TableRow, adminSelect, card } from "@/components/admin/ui";
-import type { ScanLog } from "@/lib/admin/mock";
-import type { ScanOutcome } from "@/lib/scan/mock";
+import type { ScanLog } from "@/lib/admin/types";
+import type { Period } from "@/lib/admin/data";
+import type { ScanOutcome } from "@/lib/scan/types";
 
 type Filter = "all" | ScanOutcome;
 const filters: { key: Filter; label: string }[] = [
@@ -16,9 +18,9 @@ const filters: { key: Filter; label: string }[] = [
 const cols = "180px 1fr 130px 110px 160px";
 
 /** 스캔 로그 표: 결과 필터 칩, 기간 선택, CSV 내보내기 */
-export function ScanMonitor({ logs }: { logs: ScanLog[] }) {
+export function ScanMonitor({ logs, period }: { logs: ScanLog[]; period: Period }) {
+  const router = useRouter();
   const [filter, setFilter] = useState<Filter>("all");
-  const [period, setPeriod] = useState("today");
 
   const rows = useMemo(() => logs.filter((r) => filter === "all" || r.outcome === filter), [logs, filter]);
   const count = (k: Filter) => (k === "all" ? logs.length : logs.filter((r) => r.outcome === k).length);
@@ -55,7 +57,7 @@ export function ScanMonitor({ logs }: { logs: ScanLog[] }) {
           })}
         </div>
         <div className="flex gap-2">
-          <select value={period} onChange={(e) => setPeriod(e.target.value)} className={`${adminSelect} h-10`}>
+          <select value={period} onChange={(e) => router.push(`/admin/monitor?period=${e.target.value}`)} className={`${adminSelect} h-10`}>
             <option value="today">오늘</option>
             <option value="7d">최근 7일</option>
             <option value="30d">최근 30일</option>
@@ -70,8 +72,8 @@ export function ScanMonitor({ logs }: { logs: ScanLog[] }) {
       <TableHead cols={cols}>
         <span>시간</span><span>제품</span><span>결과</span><span className="text-right">스캔 횟수</span><span className="text-right">지역</span>
       </TableHead>
-      {rows.map((r, i) => (
-        <TableRow key={`${r.time}-${i}`} cols={cols}>
+      {rows.map((r) => (
+        <TableRow key={r.id} cols={cols}>
           <span className="font-inter text-sm text-gray-5">{r.time}</span>
           <span>
             <span className="block font-semibold">{r.product}</span>

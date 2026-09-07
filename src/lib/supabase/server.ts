@@ -1,11 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
+import type { Database } from "./types";
 import { cookies } from "next/headers";
 
 // 서버 컴포넌트 / Route Handler / Server Action 에서 사용하는 Supabase 클라이언트
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {

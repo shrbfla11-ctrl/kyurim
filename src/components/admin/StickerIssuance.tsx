@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Pill, TableHead, TableRow, adminSelect, card } from "@/components/admin/ui";
-import type { Product, Sticker, StickerStatus } from "@/lib/admin/mock";
+import type { Product, Sticker, StickerStatus } from "@/lib/admin/types";
+import { issueStickers } from "@/lib/admin/actions";
 
 const cols = "200px 1fr 140px 120px";
 const MAX_FILES = 500;
@@ -13,26 +15,26 @@ const statusPill: Record<StickerStatus, { label: string; cls: string }> = {
   done: { label: "등록 완료", cls: "bg-green-light text-green" },
   processing: { label: "처리 중", cls: "bg-blue-light text-blue" },
   failed: { label: "패턴 인식 실패", cls: "bg-red-light text-red" },
+  revoked: { label: "폐기", cls: "bg-gray-1 text-gray-5" },
 };
 
 /**
  * 스티커 발급: 제품 선택 → 패턴 이미지 업로드 → 발급 결과.
- * 패턴 등록 엔진이 연결되기 전까지 업로드 진행률과 결과는 화면에서만 시뮬레이션됩니다.
+ * 파일은 서버 액션으로 스토리지에 올리고 stickers 행을 만듭니다. 패턴 등록 엔진은 아직 연결되지 않았습니다.
  */
 export function StickerIssuance({ products, initial }: { products: Product[]; initial: Sticker[] }) {
   const [productId, setProductId] = useState(products[0]?.id ?? "");
   const [files, setFiles] = useState<File[]>([]);
-  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
-  const [rows, setRows] = useState(initial);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const rows = initial;
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const timer = useRef<number | null>(null);
+  const router = useRouter();
 
   const product = products.find((p) => p.id === productId);
   const doneCount = rows.filter((r) => r.status === "done").length;
   const failCount = rows.filter((r) => r.status === "failed").length;
-
-  useEffect(() => () => { if (timer.current) window.clearInterval(timer.current); }, []);
 
   function addFiles(list: FileList | null) {
     if (!list) return;
@@ -40,33 +42,21 @@ export function StickerIssuance({ products, initial }: { products: Product[]; in
     setFiles((prev) => [...prev, ...next].slice(0, MAX_FILES));
   }
 
-  function issue() {
-    if (!product || files.length === 0 || progress) return;
-    const total = files.length;
-    const today = new Date();
-    const issuedAt = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, "0")}.${String(today.getDate()).padStart(2, "0")}`;
-    const prefix = `PUF-${product.maker.slice(0, 2).toUpperCase().replace(/[^A-Z]/g, "X")}${String(today.getFullYear()).slice(2)}`;
-    setProgress({ done: 0, total });
-    let done = 0;
-    timer.current = window.setInterval(() => {
-      done = Math.min(total, done + Math.max(1, Math.round(total / 20)));
-      setProgress({ done, total });
-      if (done >= total) {
-        if (timer.current) window.clearInterval(timer.current);
-        const created: Sticker[] = files.map((f, i) => ({
-          id: `${prefix}-${String(Date.now() % 1000000 + i).padStart(6, "0")}`,
-          product: product.name,
-          issuedAt,
-          status: f.size === 0 ? "failed" : "done",
-        }));
-        setRows((prev) => [...created.reverse(), ...prev]);
-        setFiles([]);
-        window.setTimeout(() => setProgress(null), 800);
-      }
-    }, 120);
+  async function issue() {
+    if (!product || files.length === 0 || busy) return;
+    setBusy(true);
+    setMessage(null);
+    const form = new FormData();
+    form.append("productId", product.id);
+    files.forEach((f) => form.append("files", f));
+    const res = await issueStickers(form);
+    setBusy(false);
+    if (!res.ok) return setMessage({ ok: false, text: res.error });
+    setMessage({ ok: res.failed === 0, text: `${res.done}장 등록 완료${res.failed ? `, ${res.failed}장 실패` : ""}` });
+    setFiles([]);
+    router.refresh();
   }
 
-  const pct = progress ? Math.round((progress.done / progress.total) * 100) : 0;
   const step = "flex h-7 w-7 items-center justify-center rounded-full bg-blue font-inter text-[13px] font-bold text-white";
 
   return (
@@ -102,19 +92,9 @@ export function StickerIssuance({ products, initial }: { products: Product[]; in
             <input ref={inputRef} type="file" accept="image/png,image/tiff,.tif,.tiff" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
           </div>
 
-          {progress && (
-            <div className="mt-4 flex flex-col gap-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-6">업로드 중 · <span className="font-inter font-semibold text-ink">{progress.done} / {progress.total}</span></span>
-                <span className="font-inter font-semibold text-blue">{pct}%</span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-gray-1">
-                <div className="h-full rounded-full bg-blue transition-[width] duration-300" style={{ width: `${pct}%` }} />
-              </div>
-            </div>
-          )}
+          {message && <div className={`mt-4 text-sm font-semibold ${message.ok ? "text-green" : "text-red"}`}>{message.text}</div>}
 
-          <Button full className="mt-5" onClick={issue} disabled={!product || files.length === 0 || !!progress} loading={!!progress} loadingLabel="발급 중...">
+          <Button full className="mt-5" onClick={issue} disabled={!product || files.length === 0 || busy} loading={busy} loadingLabel="발급 중...">
             스티커 발급하기
           </Button>
         </div>

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { OutcomeBadge, TableHead, TableRow, card } from "@/components/admin/ui";
-import { dashboardStats as s, scanLogs } from "@/lib/admin/mock";
+import type { DashboardStats, ScanLog } from "@/lib/admin/types";
 
 const cols = "160px 1fr 120px 100px 120px";
 
@@ -17,8 +17,7 @@ function Stat({ label, value, note, tone = "gray" }: { label: string; value: Rea
 }
 
 /** 대시보드 본문: 통계 카드 4개 + 최근 스캔 표 */
-export function DashboardContent() {
-  const recent = scanLogs.slice(0, 6);
+export function DashboardContent({ stats: s, recent }: { stats: DashboardStats; recent: ScanLog[] }) {
   return (
     <>
       <div className="grid grid-cols-4 gap-4">
@@ -37,7 +36,7 @@ export function DashboardContent() {
           <span>시간</span><span>제품</span><span>결과</span><span className="text-right">스캔 횟수</span><span className="text-right">지역</span>
         </TableHead>
         {recent.map((r) => (
-          <TableRow key={`${r.time}-${r.stickerId}`} cols={cols}>
+          <TableRow key={r.id} cols={cols}>
             <span className="font-inter text-sm text-gray-5">{r.time.slice(6)}</span>
             <span className="font-semibold">{r.product}</span>
             <span><OutcomeBadge outcome={r.outcome} /></span>
@@ -45,6 +44,7 @@ export function DashboardContent() {
             <span className="text-right text-gray-5">{r.region}</span>
           </TableRow>
         ))}
+        {recent.length === 0 && <div className="px-6 py-12 text-center text-[15px] text-gray-4">아직 스캔 기록이 없어요.</div>}
       </div>
     </>
   );

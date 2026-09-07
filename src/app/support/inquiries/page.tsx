@@ -6,24 +6,22 @@ import { Nav } from "@/components/landing/Nav";
 import { TabBar } from "@/components/app/TabBar";
 import { InquiryDetail, InquiryList } from "@/components/support/InquiryList";
 import { getUserSummary } from "@/lib/auth/user";
-import { mockInquiries } from "@/lib/support/mock";
+import { getInquiry, listInquiries } from "@/lib/support/data";
 
 export const metadata: Metadata = { title: "문의 내역 - PUF" };
 
 const side = [
   { href: "/profile", label: "내 프로필" },
   { href: "/support/inquiries", label: "문의 내역", active: true },
-  { href: "/support", label: "고객센터" },
 ];
 
 export default async function InquiriesPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const user = await getUserSummary();
   if (!user) redirect("/login?next=/support/inquiries");
   const { id } = await searchParams;
-  // DB 연결 전까지 예시 문의를 보여 줍니다.
-  const items = mockInquiries;
-  const selected = items.find((i) => i.id === id) ?? null;
-  const detail = selected ?? items[0] ?? null;
+  const items = await listInquiries();
+  const selected = typeof id === "string" && items.some((i) => i.id === id) ? await getInquiry(id) : null;
+  const detail = selected ?? (items[0] ? await getInquiry(items[0].id) : null);
 
   return (
     <div className="min-h-dvh bg-gray-1">

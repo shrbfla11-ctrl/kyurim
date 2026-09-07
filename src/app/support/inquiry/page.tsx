@@ -5,7 +5,7 @@ import { ChevronLeft } from "lucide-react";
 import { Nav } from "@/components/landing/Nav";
 import { InquiryForm } from "@/components/support/InquiryForm";
 import { getUserSummary } from "@/lib/auth/user";
-import { supportCategories, type SupportCategory } from "@/lib/support/mock";
+import { supportCategories, type SupportCategory } from "@/lib/support/content";
 
 export const metadata: Metadata = { title: "1:1 문의 - PUF" };
 

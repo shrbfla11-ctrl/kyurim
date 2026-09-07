@@ -55,7 +55,8 @@ export function ProfileView({ user }: { user: UserSummary }) {
     setNameError(err);
     if (err) return;
     setNameBusy(true);
-    const { error } = await supabase.auth.updateUser({ data: { name: name.trim() } });
+    const { error } = await supabase.from("profiles").update({ name: name.trim() }).eq("id", user.id);
+    if (!error) await supabase.auth.updateUser({ data: { name: name.trim() } });
     setNameBusy(false);
     if (error) return setNameError("저장하지 못했어요. 잠시 후 다시 시도해 주세요.");
     setNameSaved(true);
@@ -98,7 +99,7 @@ export function ProfileView({ user }: { user: UserSummary }) {
   async function toggleMarketing() {
     const next = !marketing;
     setMarketing(next);
-    const { error } = await supabase.auth.updateUser({ data: { marketing_opt_in: next } });
+    const { error } = await supabase.from("profiles").update({ marketing_opt_in: next }).eq("id", user.id);
     if (error) setMarketing(!next);
   }
 

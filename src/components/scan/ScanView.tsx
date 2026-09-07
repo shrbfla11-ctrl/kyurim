@@ -98,9 +98,9 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
         form.append("image", image, "scan.jpg");
         const res = await fetch("/api/scan", { method: "POST", body: form });
         if (!res.ok) throw new Error("bad response");
-        const data = (await res.json()) as { outcome: string; scannedAt: string };
+        const data = (await res.json()) as { id: string };
         streamRef.current?.getTracks().forEach((t) => t.stop());
-        router.push(`/scan/result?outcome=${encodeURIComponent(data.outcome)}&at=${encodeURIComponent(data.scannedAt)}`);
+        router.push(`/scan/result?id=${encodeURIComponent(data.id)}`);
       } catch {
         showError("분석에 실패했어요", "네트워크 상태를 확인하고 다시 시도해 주세요.");
       }

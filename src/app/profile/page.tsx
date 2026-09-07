@@ -11,7 +11,6 @@ export const metadata: Metadata = { title: "내 프로필 - PUF" };
 const side = [
   { href: "/profile", label: "내 프로필", active: true },
   { href: "/support/inquiries", label: "문의 내역" },
-  { href: "/support", label: "고객센터" },
 ];
 
 export default async function ProfilePage() {

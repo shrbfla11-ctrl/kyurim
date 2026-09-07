@@ -1,19 +1,22 @@
 "use client";
 
 import { useCallback, useMemo, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { Ellipsis, ImagePlus, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { ErrorText } from "@/components/ui/Input";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { ProductThumb, TableHead, TableRow, adminSelect, card } from "@/components/admin/ui";
-import { categories, type Category, type Product } from "@/lib/admin/mock";
+import { categories, type Category, type Product } from "@/lib/admin/types";
+import { createProduct } from "@/lib/admin/actions";
 
 const cols = "1fr 140px 140px 140px 80px";
 const PAGE = 10;
 
-/** 제품 목록 표 + 제품 등록 모달. 등록은 DB 연결 전까지 화면 목록에만 추가됩니다. */
+/** 제품 목록 표 + 제품 등록 모달. 등록은 서버 액션으로 저장한 뒤 목록을 새로 고칩니다. */
 export function ProductsTable({ initial }: { initial: Product[] }) {
-  const [items, setItems] = useState(initial);
+  const router = useRouter();
+  const items = initial;
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<"all" | Category>("all");
   const [page, setPage] = useState(1);
@@ -89,9 +92,9 @@ export function ProductsTable({ initial }: { initial: Product[] }) {
       {open && (
         <CreateProductModal
           onClose={() => setOpen(false)}
-          onCreate={(p) => {
-            setItems([p, ...items]);
+          onCreated={() => {
             setOpen(false);
+            router.refresh();
           }}
         />
       )}
@@ -99,27 +102,24 @@ export function ProductsTable({ initial }: { initial: Product[] }) {
   );
 }
 
-function CreateProductModal({ onClose, onCreate }: { onClose: () => void; onCreate: (p: Product) => void }) {
+function CreateProductModal({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
   const [name, setName] = useState("");
   const [maker, setMaker] = useState("");
   const [category, setCategory] = useState<Category>(categories[0]);
   const [desc, setDesc] = useState("");
-  const [errors, setErrors] = useState<{ name?: string; maker?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; maker?: string; form?: string }>({});
+  const [busy, setBusy] = useState(false);
 
-  function submit(e: FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     const errs = { name: name.trim() ? undefined : "제품명을 입력해 주세요.", maker: maker.trim() ? undefined : "제조사를 입력해 주세요." };
     setErrors(errs);
     if (errs.name || errs.maker) return;
-    const d = new Date();
-    onCreate({
-      id: `p-${Date.now()}`,
-      name: name.trim(),
-      maker: maker.trim(),
-      category,
-      stickers: 0,
-      createdAt: `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`,
-    });
+    setBusy(true);
+    const res = await createProduct({ name, maker, category, description: desc });
+    setBusy(false);
+    if (!res.ok) return setErrors({ form: res.error });
+    onCreated();
   }
 
   const field = "h-12 w-full rounded-xl border-[1.5px] border-transparent bg-gray-1 px-3.5 text-[15px] text-ink outline-none transition-colors duration-300 focus:border-blue focus:bg-white";
@@ -171,9 +171,10 @@ function CreateProductModal({ onClose, onCreate }: { onClose: () => void; onCrea
           <textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="소비자에게 표시되는 제품 설명을 입력하세요." className="h-24 w-full resize-none rounded-xl border-[1.5px] border-transparent bg-gray-1 px-3.5 py-3 text-[15px] leading-normal text-ink outline-none transition-colors duration-300 focus:border-blue focus:bg-white" />
         </label>
 
+        {errors.form && <ErrorText>{errors.form}</ErrorText>}
         <div className="flex justify-end gap-2">
           <Button type="button" variant="ghost" size="md" onClick={onClose} className="bg-gray-1 text-gray-6">취소</Button>
-          <Button type="submit" size="md">등록하기</Button>
+          <Button type="submit" size="md" loading={busy} loadingLabel="등록 중...">등록하기</Button>
         </div>
       </form>
     </div>

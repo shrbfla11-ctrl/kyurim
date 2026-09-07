@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export type UserSummary = {
+  id: string;
   email: string | null;
   name: string | null;
   avatarUrl: string | null;

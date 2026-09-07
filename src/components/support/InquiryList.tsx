@@ -3,9 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { MessageSquareText, Send } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import type { Inquiry, InquiryMessage } from "@/lib/support/mock";
+import type { Inquiry } from "@/lib/support/content";
+import { addInquiryMessage } from "@/lib/support/actions";
 
 const card = "rounded-[20px] bg-white shadow-card";
 
@@ -21,7 +23,10 @@ export function InquiryList({ items, selectedId }: { items: Inquiry[]; selectedI
       <div className="flex items-end justify-between gap-4">
         <div>
           <h1 className="text-[28px] font-bold leading-[1.3] tracking-[-0.03em] lg:text-[32px]">문의 내역</h1>
-          <p className="mt-1.5 text-[15px] text-gray-5">남긴 문의와 답변을 확인할 수 있어요.</p>
+          <p className="mt-1.5 text-[15px] text-gray-5">
+            남긴 문의와 답변을 확인할 수 있어요.{" "}
+            <Link href="/support" className="font-semibold text-blue hover:underline">자주 묻는 질문 보기</Link>
+          </p>
         </div>
         <Button href="/support/inquiry" size="md" className="flex-none">새 문의</Button>
       </div>
@@ -67,17 +72,23 @@ export function InquiryList({ items, selectedId }: { items: Inquiry[]; selectedI
 
 /** 문의 상세: 헤더 카드 + 말풍선 대화 + 추가 문의 입력 */
 export function InquiryDetail({ inquiry }: { inquiry: Inquiry }) {
-  const [messages, setMessages] = useState<InquiryMessage[]>(inquiry.messages);
+  const router = useRouter();
+  const messages = inquiry.messages;
   const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const s = statusPill[inquiry.status];
 
-  function send() {
+  async function send() {
     const body = text.trim();
-    if (!body) return;
-    const d = new Date();
-    const at = `${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-    setMessages([...messages, { from: "user", body, at }]);
+    if (!body || busy) return;
+    setBusy(true);
+    setError(null);
+    const res = await addInquiryMessage(inquiry.id, body);
+    setBusy(false);
+    if (!res.ok) return setError(res.error);
     setText("");
+    router.refresh();
   }
 
   return (
@@ -91,19 +102,24 @@ export function InquiryDetail({ inquiry }: { inquiry: Inquiry }) {
       </div>
 
       <div className="flex flex-col gap-4 py-2">
-        {messages.map((m, i) =>
+        {messages.map((m) =>
           m.from === "user" ? (
-            <div key={i} className="flex flex-col items-end gap-1.5">
+            <div key={m.id} className="flex flex-col items-end gap-1.5">
               <div className="max-w-full whitespace-pre-line rounded-[20px_20px_4px_20px] bg-blue px-[18px] py-3.5 text-[15px] leading-relaxed text-white lg:max-w-[560px]">{m.body}</div>
-              {m.attachment === "fake" && (
-                <div className="flex h-[72px] w-[72px] items-center justify-center rounded-xl bg-gradient-to-br from-[#FEECEE] to-[#FBD9DC]">
-                  <span className="rounded-full bg-white px-[7px] py-[3px] text-[11px] font-bold text-red">위조 의심</span>
+              {m.attachments.length > 0 && (
+                <div className="flex gap-1.5">
+                  {m.attachments.map((url) => (
+                    <a key={url} href={url} target="_blank" rel="noreferrer" className="block h-[72px] w-[72px] overflow-hidden rounded-xl bg-gray-1">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={url} alt="첨부 이미지" className="h-full w-full object-cover" />
+                    </a>
+                  ))}
                 </div>
               )}
               <span className="font-inter text-xs text-gray-4">{m.at}</span>
             </div>
           ) : (
-            <div key={i} className="flex items-end gap-2.5">
+            <div key={m.id} className="flex items-end gap-2.5">
               <span className="flex h-8 w-8 flex-none items-center justify-center overflow-hidden rounded-full border border-gray-2 bg-white">
                 <Image src="/puf-logo.png" alt="PUF" width={951} height={598} className="h-3 w-auto" />
               </span>
@@ -121,8 +137,8 @@ export function InquiryDetail({ inquiry }: { inquiry: Inquiry }) {
         onSubmit={(e) => { e.preventDefault(); send(); }}
         className={`${card} flex items-center gap-3 py-3 pl-5 pr-3`}
       >
-        <input value={text} onChange={(e) => setText(e.target.value)} placeholder="추가 문의를 남겨 주세요" className="h-11 min-w-0 flex-1 bg-transparent text-[15px] text-ink outline-none" />
-        <button type="submit" aria-label="보내기" className="flex h-11 w-11 flex-none items-center justify-center rounded-xl bg-blue text-white transition duration-300 hover:bg-blue-dark">
+        <input value={text} onChange={(e) => setText(e.target.value)} placeholder={error ?? "추가 문의를 남겨 주세요"} className="h-11 min-w-0 flex-1 bg-transparent text-[15px] text-ink outline-none" />
+        <button type="submit" aria-label="보내기" disabled={busy} className="flex h-11 w-11 flex-none items-center justify-center rounded-xl bg-blue text-white transition duration-300 hover:bg-blue-dark disabled:opacity-50">
           <Send size={20} />
         </button>
       </form>

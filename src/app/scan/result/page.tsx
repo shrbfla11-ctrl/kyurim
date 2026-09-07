@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ChevronLeft, ShieldCheck } from "lucide-react";
 import { Nav } from "@/components/landing/Nav";
 import { ResultView } from "@/components/scan/ResultView";
 import { ResultActions } from "@/components/scan/ResultActions";
 import { getUserSummary } from "@/lib/auth/user";
-import { isScanOutcome, mockResult } from "@/lib/scan/mock";
+import { getScanResult } from "@/lib/scan/data";
 
 export const metadata: Metadata = { title: "스캔 결과 - PUF" };
 
 type Search = Promise<Record<string, string | string[] | undefined>>;
 
 export default async function ScanResultPage({ searchParams }: { searchParams: Search }) {
-  const params = await searchParams;
-  const outcome = isScanOutcome(params.outcome) ? params.outcome : "genuine";
-  const at = typeof params.at === "string" && !Number.isNaN(Date.parse(params.at)) ? params.at : undefined;
-  const [user, result] = [await getUserSummary(), mockResult(outcome, at)];
-  const canSave = !!user;
+  const { id } = await searchParams;
+  const user = await getUserSummary();
+  if (!user) redirect(`/login?next=${encodeURIComponent(`/scan/result?id=${id ?? ""}`)}`);
+  const result = typeof id === "string" ? await getScanResult(id) : null;
+  if (!result) redirect("/history");
+  const canSave = true;
 
   return (
     <div className="min-h-dvh bg-gray-1">

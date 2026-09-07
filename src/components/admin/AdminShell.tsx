@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Activity, ExternalLink, LayoutGrid, Package, ScanLine } from "lucide-react";
+import { Activity, House, LayoutGrid, Package, ScanLine } from "lucide-react";
 import type { UserSummary } from "@/components/auth/UserMenu";
 
 export type AdminNavKey = "dashboard" | "products" | "stickers" | "monitor";
@@ -52,15 +52,19 @@ export function AdminShell({
             );
           })}
         </nav>
-        <div className="mt-auto flex items-center gap-2.5 rounded-[14px] bg-gray-1 p-3">
+        <Link
+          href="/"
+          className="mt-auto flex h-11 items-center gap-3 rounded-xl border border-gray-2 px-3 text-[15px] font-semibold text-gray-6 transition-colors duration-300 hover:bg-gray-1"
+        >
+          <House size={20} />
+          홈으로 돌아가기
+        </Link>
+        <div className="-mt-4 flex items-center gap-2.5 rounded-[14px] bg-gray-1 p-3">
           <span className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-blue-light text-sm font-bold text-blue">{initial}</span>
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm font-bold">{user.name ?? "관리자"}</span>
             <span className="block truncate text-xs text-gray-4">{user.email}</span>
           </span>
-          <Link href="/" aria-label="사용자 화면으로" className="flex text-gray-4 hover:text-ink">
-            <ExternalLink size={18} />
-          </Link>
         </div>
       </aside>
 

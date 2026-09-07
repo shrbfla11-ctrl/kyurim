@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { SearchInput } from "@/components/ui/SearchInput";
-import type { HistoryItem, ScanOutcome } from "@/lib/scan/mock";
+import type { HistoryItem, ScanOutcome } from "@/lib/scan/types";
 
 type Filter = "all" | ScanOutcome;
 
@@ -59,7 +59,7 @@ export function HistoryList({ items }: { items: HistoryItem[] }) {
             return (
               <li key={it.id}>
                 <Link
-                  href={`/scan/result?outcome=${it.outcome}`}
+                  href={`/scan/result?id=${it.id}`}
                   className="flex items-center gap-3.5 rounded-[20px] bg-white p-4 text-ink shadow-card transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
                 >
                   <span className={`flex h-14 w-14 flex-none items-center justify-center rounded-[14px] bg-gradient-to-br ${fake ? "from-[#FEECEE] to-[#FBD9DC]" : "from-[#EEF5FF] to-[#DCEBFF]"}`}>

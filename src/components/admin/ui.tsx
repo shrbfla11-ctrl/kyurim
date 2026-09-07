@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { ScanOutcome } from "@/lib/scan/mock";
+import type { ScanOutcome } from "@/lib/scan/types";
 
 export const card = "rounded-[20px] bg-white shadow-card";
 

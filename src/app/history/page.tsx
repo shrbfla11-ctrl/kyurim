@@ -4,7 +4,7 @@ import { Nav } from "@/components/landing/Nav";
 import { TabBar } from "@/components/app/TabBar";
 import { HistoryList } from "@/components/history/HistoryList";
 import { getUserSummary } from "@/lib/auth/user";
-import { mockHistory } from "@/lib/scan/mock";
+import { listHistory } from "@/lib/scan/data";
 
 export const metadata: Metadata = { title: "스캔 기록 - PUF" };
 
@@ -12,8 +12,7 @@ export default async function HistoryPage() {
   const user = await getUserSummary();
   if (!user) redirect("/login?next=/history");
 
-  // DB 연결 전까지 예시 데이터를 보여 줍니다.
-  const items = mockHistory;
+  const items = await listHistory();
 
   return (
     <div className="min-h-dvh bg-white">

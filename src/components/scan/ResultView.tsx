@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, ChevronDown, CircleAlert, CircleHelp, TriangleAlert } from "lucide-react";
-import { formatDateTime, outcomeMeta, type ScanResult, type ScanTag } from "@/lib/scan/mock";
+import { formatDateTime, outcomeMeta, type ScanResult, type ScanTag } from "@/lib/scan/types";
 
 const tone: Record<ScanTag["tone"], string> = {
   green: "bg-green-light text-green",

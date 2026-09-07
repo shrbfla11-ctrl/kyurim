@@ -4,7 +4,8 @@ import { useRef, useState, type FormEvent } from "react";
 import { Check, ChevronDown, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { ErrorText } from "@/components/ui/Input";
-import { supportCategories, type SupportCategory } from "@/lib/support/mock";
+import { supportCategories, type SupportCategory } from "@/lib/support/content";
+import { createInquiry } from "@/lib/support/actions";
 
 const card = "rounded-[20px] bg-white p-6 shadow-card";
 const field = "h-14 w-full rounded-[14px] border-[1.5px] bg-gray-1 px-4 text-base text-ink outline-none transition-colors duration-300 focus:border-blue focus:bg-white";
@@ -12,9 +13,9 @@ const label = "mb-2 block text-sm font-semibold text-gray-6";
 const MAX_BODY = 1000;
 const MAX_FILES = 3;
 
-type Errors = { category?: string; subject?: string; body?: string };
+type Errors = { category?: string; subject?: string; body?: string; form?: string };
 
-/** 1:1 문의 작성. 제출은 DB 연결 전까지 접수 번호를 만들어 완료 화면만 보여 줍니다. */
+/** 1:1 문의 작성. 서버 액션으로 저장하고 DB 가 만든 접수 번호를 보여 줍니다. */
 export function InquiryForm({ email, defaultCategory }: { email: string; defaultCategory?: SupportCategory }) {
   const [category, setCategory] = useState<"" | SupportCategory>(defaultCategory ?? "");
   const [subject, setSubject] = useState("");
@@ -25,7 +26,7 @@ export function InquiryForm({ email, defaultCategory }: { email: string; default
   const [ticket, setTicket] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  function submit(e: FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     const errs: Errors = {
       category: category ? undefined : "문의 유형을 선택해 주세요.",
@@ -35,12 +36,15 @@ export function InquiryForm({ email, defaultCategory }: { email: string; default
     setErrors(errs);
     if (errs.category || errs.subject || errs.body) return;
     setBusy(true);
-    const d = new Date();
-    const yymmdd = `${String(d.getFullYear()).slice(2)}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
-    window.setTimeout(() => {
-      setTicket(`#PUF-${yymmdd}-${String(Math.floor(Math.random() * 9000) + 1000)}`);
-      setBusy(false);
-    }, 500);
+    const form = new FormData();
+    form.append("category", category);
+    form.append("subject", subject);
+    form.append("body", body);
+    files.forEach((f) => form.append("files", f));
+    const res = await createInquiry(form);
+    setBusy(false);
+    if (!res.ok) return setErrors({ form: res.error });
+    setTicket(res.ticket);
   }
 
   if (ticket) {
@@ -145,6 +149,7 @@ export function InquiryForm({ email, defaultCategory }: { email: string; default
         </label>
       </div>
 
+      {errors.form && <ErrorText>{errors.form}</ErrorText>}
       <Button type="submit" full loading={busy} loadingLabel="보내는 중...">문의 보내기</Button>
     </form>
   );

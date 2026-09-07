@@ -4,13 +4,13 @@ import { useMemo, useState } from "react";
 import { ChevronDown, Clock, Mail, SearchX } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { SearchInput } from "@/components/ui/SearchInput";
-import { faqs, supportCategories, type SupportCategory } from "@/lib/support/mock";
+import { supportCategories, type Faq, type SupportCategory } from "@/lib/support/content";
 
 const card = "rounded-[20px] bg-white shadow-card";
 type Filter = "전체" | SupportCategory;
 
 /** 고객센터 본문: 검색 · 카테고리 칩 · FAQ 아코디언 · 1:1 문의 안내 · 운영 정보 */
-export function SupportView({ loggedIn }: { loggedIn: boolean }) {
+export function SupportView({ loggedIn, faqs }: { loggedIn: boolean; faqs: Faq[] }) {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<Filter>("전체");
   const [open, setOpen] = useState<number>(0);
@@ -20,7 +20,7 @@ export function SupportView({ loggedIn }: { loggedIn: boolean }) {
     return faqs
       .map((f, idx) => ({ ...f, idx }))
       .filter((f) => (cat === "전체" || f.category === cat) && (!kw || `${f.q} ${f.a}`.toLowerCase().includes(kw)));
-  }, [q, cat]);
+  }, [faqs, q, cat]);
   const groups = supportCategories.map((c) => ({ cat: c, items: rows.filter((r) => r.category === c) })).filter((g) => g.items.length);
   const noResults = rows.length === 0;
 

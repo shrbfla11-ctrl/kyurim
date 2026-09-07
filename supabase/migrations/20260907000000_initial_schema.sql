@@ -209,7 +209,8 @@ create policy "profiles: own update" on public.profiles for update using (id = a
 create or replace function public.guard_profile_role() returns trigger
 language plpgsql as $$
 begin
-  if new.role is distinct from old.role and not public.is_admin() then
+  -- 대시보드·서비스 키 실행(auth.uid() 가 null)은 허용, 일반 로그인 사용자만 차단
+  if new.role is distinct from old.role and auth.uid() is not null and not public.is_admin() then
     raise exception 'role can only be changed by admin';
   end if;
   return new;
