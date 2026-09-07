@@ -1,5 +1,5 @@
 // 관리자 판별. MVP 단계에서는 이메일로 구분하고, 이후 역할 테이블/JWT 클레임으로 교체합니다.
-export const ADMIN_EMAILS = ["admin@puf.com"];
+export const ADMIN_EMAILS = ["admin@puf.com", "shrbfla1004@naver.com", "shrbfla11@gmail.com"];
 
 // 대시보드에서 직접 만든 내부 계정의 표시 이름
 const DISPLAY_NAMES: Record<string, string> = {

@@ -1,5 +1,6 @@
 import { getUserSummary } from "@/lib/auth/user";
 import { Nav } from "@/components/landing/Nav";
+import { SmoothAnchors } from "@/components/app/SmoothAnchors";
 import { Hero } from "@/components/landing/Hero";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { ResultPreview } from "@/components/landing/ResultPreview";
@@ -13,6 +14,7 @@ export default async function Home() {
 
   return (
     <>
+      <SmoothAnchors />
       <Nav user={summary} />
       <main>
         <Hero />

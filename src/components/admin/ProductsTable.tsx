@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
-import { Ellipsis, ImagePlus, Plus, Search, X } from "lucide-react";
+import { useCallback, useMemo, useState, type FormEvent } from "react";
+import { Ellipsis, ImagePlus, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { ErrorText } from "@/components/ui/Input";
-import { ProductThumb, TableHead, TableRow, adminInput, adminSelect, card } from "@/components/admin/ui";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { ProductThumb, TableHead, TableRow, adminSelect, card } from "@/components/admin/ui";
 import { categories, type Category, type Product } from "@/lib/admin/mock";
 
 const cols = "1fr 140px 140px 140px 80px";
@@ -16,6 +17,10 @@ export function ProductsTable({ initial }: { initial: Product[] }) {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<"all" | Category>("all");
   const [page, setPage] = useState(1);
+  const search = useCallback((v: string) => {
+    setQ(v);
+    setPage(1);
+  }, []);
   const [open, setOpen] = useState(false);
 
   const list = useMemo(() => {
@@ -33,10 +38,7 @@ export function ProductsTable({ initial }: { initial: Product[] }) {
 
       <div className={`${card} overflow-hidden`}>
         <div className="flex gap-2 border-b border-gray-1 px-6 py-4">
-          <label className="relative max-w-[360px] flex-1">
-            <Search size={18} className="pointer-events-none absolute left-3.5 top-3 text-gray-4" />
-            <input type="search" value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} placeholder="제품명 검색" className={`${adminInput} w-full pl-10`} />
-          </label>
+          <SearchInput size="md" placeholder="제품명 검색" onSearch={search} className="max-w-[360px] flex-1" />
           <select value={cat} onChange={(e) => { setCat(e.target.value as typeof cat); setPage(1); }} className={adminSelect}>
             <option value="all">전체 카테고리</option>
             {categories.map((c) => <option key={c} value={c}>{c}</option>)}

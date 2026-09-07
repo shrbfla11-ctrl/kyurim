@@ -144,7 +144,7 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
           <X size={22} />
         </button>
         <span className="text-[15px] font-semibold">정품 확인</span>
-        <Link href="/#how" aria-label="도움말" className={`${roundBtn} h-11 w-11`}>
+        <Link href="/guide" aria-label="도움말" className={`${roundBtn} h-11 w-11`}>
           <CircleHelp size={22} />
         </Link>
       </div>

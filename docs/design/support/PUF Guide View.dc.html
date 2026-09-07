@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display:flex;flex-direction:column;gap:{{ gapMain }};font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28">
+  <!-- header -->
+  <div>
+    <h1 style="margin:0;font-size:{{ h1Size }};font-weight:700;letter-spacing:-0.03em;line-height:1.3">이용 가이드</h1>
+    <p style="margin:8px 0 0;font-size:16px;line-height:1.6;color:#6B7684">스티커 스캔부터 결과 확인까지, 3분이면 익힐 수 있어요</p>
+    <div style="position:relative;margin-top:20px;max-width:560px">
+      <svg style="position:absolute;left:16px;top:16px" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B95A1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg>
+      <input type="search" value="{{ query }}" onChange="{{ onQuery }}" placeholder="궁금한 내용을 검색해 보세요" style="width:100%;height:52px;padding:0 16px 0 44px;border-radius:14px;border:1.5px solid transparent;background:#F2F4F6;font-size:15px;color:#191F28;outline:none;font-family:inherit" style-focus="border-color:#3182F6;background:#fff">
+    </div>
+  </div>
+
+  <!-- no results -->
+  <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);padding:48px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px">
+      <span style="width:64px;height:64px;border-radius:999px;background:#F2F4F6;color:#8B95A1;display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5M8.5 8.5l5 5M13.5 8.5l-5 5"></path></svg></span>
+      <div><div style="font-size:18px;font-weight:700">'<span style="color:#3182F6">{{ query }}</span>'에 대한 결과가 없어요</div><p style="margin:8px 0 0;font-size:15px;line-height:1.6;color:#6B7684">다른 검색어로 다시 시도하거나 고객센터에 문의해 주세요.</p></div>
+      <div style="display:flex;gap:8px"><button onClick="{{ clearQuery }}" style="height:44px;padding:0 18px;border:0;border-radius:14px;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer;transition:background .3s;font-family:inherit" style-hover="background:#E5E8EB">검색 초기화</button><a href="#" style="height:44px;padding:0 18px;border-radius:14px;background:#E8F3FF;color:#3182F6;font-size:15px;font-weight:700;display:flex;align-items:center;transition:background .3s" style-hover="background:#D4E8FF">고객센터 문의</a></div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasResults }}" hint-placeholder-val="{{ true }}">
+  <!-- quick start -->
+  <section>
+    <div style="font-size:13px;font-weight:700;color:#3182F6">빠른 시작</div>
+    <h2 style="margin:6px 0 0;font-size:24px;font-weight:700;letter-spacing:-0.03em">세 단계로 시작해요</h2>
+    <div style="display:{{ qsDisplay }};grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;overflow-x:auto;padding-bottom:4px">
+      <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+        <div style="flex:none;width:{{ qsCardW }};background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);padding:24px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="width:28px;height:28px;border-radius:999px;background:#3182F6;color:#fff;font-family:Inter,sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ s.n }}</span></div>
+          <div style="height:120px;border-radius:16px;background:linear-gradient(135deg,#EEF5FF,#DCEBFF);display:flex;align-items:center;justify-content:center;color:#3182F6">{{ s.icon }}</div>
+          <div><div style="font-size:18px;font-weight:700;letter-spacing:-0.02em">{{ s.title }}</div><p style="margin:6px 0 0;font-size:15px;line-height:1.6;color:#6B7684">{{ s.desc }}</p></div>
+        </div>
+      </sc-for>
+    </div>
+    <button style="margin-top:20px;width:{{ ctaW }};height:56px;padding:0 28px;border:0;border-radius:16px;background:#3182F6;color:#fff;font-size:16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .3s;font-family:inherit" style-hover="background:#1B64DA"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3"></path></svg>바로 스캔하기</button>
+  </section>
+
+  <!-- detailed guide -->
+  <section>
+    <div style="font-size:13px;font-weight:700;color:#3182F6">상세 가이드</div>
+    <h2 style="margin:6px 0 0;font-size:24px;font-weight:700;letter-spacing:-0.03em">차근차근 알아보기</h2>
+    <div style="display:grid;grid-template-columns:{{ guideCols }};gap:40px;margin-top:20px;align-items:start">
+      <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ false }}">
+        <nav style="position:sticky;top:24px;display:flex;flex-direction:column;gap:4px">
+          <sc-for list="{{ toc }}" as="t" hint-placeholder-count="6"><button onClick="{{ t.pick }}" style="text-align:left;height:44px;padding:0 14px;border:0;border-radius:12px;background:{{ t.bg }};color:{{ t.color }};font-size:15px;font-weight:600;cursor:pointer;transition:background .3s;font-family:inherit" style-hover="background:#F2F4F6">{{ t.title }}</button></sc-for>
+        </nav>
+      </sc-if>
+      <div style="display:flex;flex-direction:column;gap:{{ secGap }}">
+        <sc-for list="{{ sections }}" as="g" hint-placeholder-count="6">
+          <div style="background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);overflow:hidden">
+            <button onClick="{{ g.toggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;border:0;background:none;cursor:{{ g.cursor }};text-align:left;font-family:inherit">
+              <span style="display:flex;align-items:center;gap:12px"><span style="width:40px;height:40px;border-radius:12px;background:#E8F3FF;color:#3182F6;display:flex;align-items:center;justify-content:center">{{ g.icon }}</span><span style="font-size:18px;font-weight:700;color:#191F28;letter-spacing:-0.02em">{{ g.title }}</span></span>
+              <sc-if value="{{ g.showChevron }}" hint-placeholder-val="{{ false }}"><span style="flex:none;width:28px;height:28px;border-radius:999px;background:#F2F4F6;display:flex;align-items:center;justify-content:center;color:#6B7684;transition:transform .3s;transform:{{ g.rot }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span></sc-if>
+            </button>
+            <sc-if value="{{ g.open }}" hint-placeholder-val="{{ true }}">
+              <div style="padding:0 24px 24px;display:flex;flex-direction:column;gap:16px">
+                <sc-for list="{{ g.paras }}" as="p" hint-placeholder-count="2"><p style="margin:0;font-size:16px;line-height:1.6;color:#4E5968">{{ p }}</p></sc-for>
+                <!-- section extras -->
+                <sc-if value="{{ g.isPrep }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <div style="border-radius:16px;background:#F2F4F6;padding:16px;display:flex;flex-direction:column;gap:12px"><span style="font-size:13px;font-weight:700;color:#6B7684;font-family:Inter,sans-serif">iOS</span><div style="height:160px;border-radius:12px;border:1.5px dashed #B8C0CB;display:flex;align-items:center;justify-content:center;font-size:13px;color:#8B95A1">카메라 권한 화면 스크린샷</div><span style="font-size:14px;line-height:1.5;color:#4E5968">설정 → Safari → 카메라 → 허용</span></div>
+                    <div style="border-radius:16px;background:#F2F4F6;padding:16px;display:flex;flex-direction:column;gap:12px"><span style="font-size:13px;font-weight:700;color:#6B7684;font-family:Inter,sans-serif">Android</span><div style="height:160px;border-radius:12px;border:1.5px dashed #B8C0CB;display:flex;align-items:center;justify-content:center;font-size:13px;color:#8B95A1">카메라 권한 화면 스크린샷</div><span style="font-size:14px;line-height:1.5;color:#4E5968">주소창 자물쇠 → 권한 → 카메라 허용</span></div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ g.isResult }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:grid;grid-template-columns:{{ badgeCols }};gap:12px">
+                    <div style="border-radius:16px;background:#E6F8EF;padding:16px"><span style="display:inline-block;font-size:13px;font-weight:700;color:#14B866;background:#fff;padding:5px 10px;border-radius:999px">정품 확인</span><p style="margin:10px 0 0;font-size:14px;line-height:1.6;color:#1F5A3C">등록된 원본 패턴과 일치해요. 안심하고 사용하세요.</p></div>
+                    <div style="border-radius:16px;background:#FFF8E1;padding:16px"><span style="display:inline-block;font-size:13px;font-weight:700;color:#B57A0B;background:#fff;padding:5px 10px;border-radius:999px">확인 불가</span><p style="margin:10px 0 0;font-size:14px;line-height:1.6;color:#6B5A2E">패턴을 충분히 읽지 못했어요. 다시 스캔해 주세요.</p></div>
+                    <div style="border-radius:16px;background:#FEECEE;padding:16px"><span style="display:inline-block;font-size:13px;font-weight:700;color:#F04452;background:#fff;padding:5px 10px;border-radius:999px">위조 의심</span><p style="margin:10px 0 0;font-size:14px;line-height:1.6;color:#8C3A41">원본 패턴과 일치하지 않아요. 구매처에 문의해 주세요.</p></div>
+                  </div>
+                  <div style="border-radius:16px;background:#F2F4F6;padding:16px;display:flex;gap:12px;align-items:flex-start"><svg style="flex:none;margin-top:2px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7684" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg><p style="margin:0;font-size:14px;line-height:1.6;color:#4E5968"><strong style="color:#191F28">누적 스캔 횟수 경고</strong> — 같은 스티커가 여러 번 스캔되면 스티커가 재사용되었을 가능성이 있어요. 정품으로 표시되더라도 횟수가 많으면 구매처를 확인해 주세요.</p></div>
+                </sc-if>
+                <sc-if value="{{ g.isPrivacy }}" hint-placeholder-val="{{ false }}">
+                  <div style="border-radius:16px;background:#E6F8EF;padding:20px;display:flex;gap:14px;align-items:flex-start"><span style="flex:none;width:44px;height:44px;border-radius:14px;background:#fff;color:#14B866;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path><path d="M9 12l2 2 4-4"></path></svg></span><div><div style="font-size:16px;font-weight:700;color:#1F5A3C">촬영 이미지는 절대 저장되지 않아요</div><p style="margin:6px 0 0;font-size:14px;line-height:1.6;color:#1F5A3C">이미지는 패턴 대조 직후 즉시 삭제되며 서버에 남지 않아요. 스캔 기록에는 결과 정보만 저장돼요.</p></div></div>
+                </sc-if>
+                <sc-if value="{{ g.hasTips }}" hint-placeholder-val="{{ false }}">
+                  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
+                    <sc-for list="{{ g.tips }}" as="tip" hint-placeholder-count="3"><li style="display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.6;color:#4E5968"><span style="flex:none;margin-top:5px;width:18px;height:18px;border-radius:999px;background:#E8F3FF;color:#3182F6;display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span>{{ tip }}</li></sc-for>
+                  </ul>
+                </sc-if>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- support link -->
+  <a href="#" style="display:flex;align-items:center;justify-content:space-between;gap:16px;background:#3182F6;border-radius:20px;padding:24px;color:#fff;transition:background .3s" style-hover="background:#1B64DA">
+    <span><span style="display:block;font-size:18px;font-weight:700;letter-spacing:-0.02em">더 궁금한 점이 있나요?</span><span style="display:block;margin-top:4px;font-size:14px;color:rgba(255,255,255,0.85)">고객센터에서 자주 묻는 질문을 확인하거나 1:1 문의를 남겨 주세요.</span></span>
+    <svg style="flex:none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+  </a>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:375,&quot;height&quot;:1400},&quot;desktop&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;query&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  state = { open: 0, query: null };
+  svg(paths, size = 20) { return React.createElement('svg', { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' }, ...paths.map((d, i) => React.createElement('path', { key: i, d }))); }
+  sections = [
+    { key: 'prep', title: '스캔 준비', icon: ['M4 8h3l2-3h6l2 3h3v11H4z', 'M12 16.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z'], paras: ['밝은 곳에서 촬영하세요. 어두운 환경에서는 플래시가 자동으로 켜져요.', '스티커 전체가 사각형 안에 들어오도록 정면에서 맞춰 주세요. 처음 사용할 때 카메라 권한을 허용해야 해요.'], isPrep: true },
+    { key: 'result', title: '결과 읽는 법', icon: ['M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', 'M9 12l2 2 4-4'], paras: ['스캔이 끝나면 세 가지 결과 중 하나가 표시돼요. 배지 색상만 봐도 바로 알 수 있어요.'], isResult: true },
+    { key: 'unverified', title: '확인 불가일 때', icon: ['M12 3a9 9 0 100 18 9 9 0 000-18z', 'M9.5 9.5a2.5 2.5 0 015 0c0 1.5-2.5 2-2.5 3.5M12 17h.01'], paras: ['패턴을 충분히 읽지 못했을 때 표시돼요. 스티커가 위조라는 뜻은 아니에요.'], tips: ['그림자나 반사광이 스티커를 가리지 않게 각도를 바꿔 보세요.', '스티커에 10~15cm 정도로 가까이 대고 1~2초 고정하세요.', '카메라 하단의 갤러리 버튼으로 미리 찍어둔 사진을 업로드할 수도 있어요.'] },
+    { key: 'fake', title: '위조 의심일 때', icon: ['M12 4l9 16H3z', 'M12 10v4M12 17h.01'], paras: ['등록된 원본 패턴과 일치하지 않을 때 표시돼요. 제품을 사용하기 전에 판매처에 확인해 주세요.'], tips: ['결과 화면의 공유 버튼으로 결과를 이미지로 저장해 판매처에 보낼 수 있어요.', '제품 카드의 제조사 정보로 고객센터에 직접 문의할 수 있어요.', '스캔 기록에 저장해 두면 나중에 다시 확인할 수 있어요.'] },
+    { key: 'history', title: '스캔 기록', icon: ['M12 3a9 9 0 100 18 9 9 0 000-18z', 'M12 7v5l3 2'], paras: ['로그인 후 결과 화면에서 저장 버튼을 누르면 기록에 남아요. 기록 탭에서 제품명·제조사로 검색하고 결과별로 필터할 수 있어요.'] },
+    { key: 'privacy', title: '개인정보', icon: ['M6 11V8a6 6 0 0112 0v3', 'M5 11h14v10H5z'], paras: ['PUF는 촬영한 이미지를 서버에 보관하지 않아요.'], isPrivacy: true }
+  ];
+  steps = [
+    { n: 1, title: '로그인하기', desc: '이메일 또는 카카오·Google로 시작해요.', icon: ['M12 8a4 4 0 100 8 4 4 0 000-8z', 'M4 21a8 8 0 0116 0'] },
+    { n: 2, title: '스티커에 카메라 비추기', desc: '사각형 안에 스티커를 맞추면 자동으로 인식해요.', icon: ['M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3', 'M9 9h6v6H9z'] },
+    { n: 3, title: '결과 확인하기', desc: '정품 여부와 제품 정보를 바로 볼 수 있어요.', icon: ['M5 12l5 5 9-10'] }
+  ];
+  renderVals() {
+    const d = !!this.props.desktop, q = this.state.query ?? this.props.query ?? '';
+    const qq = q.trim().toLowerCase();
+    const matched = qq ? this.sections.filter(s => (s.title + s.paras.join(' ') + (s.tips || []).join(' ')).toLowerCase().includes(qq)) : this.sections;
+    const noResults = qq.length > 0 && matched.length === 0;
+    const o = this.state.open;
+    return {
+      isDesktop: d, h1Size: d ? '32px' : '28px', gapMain: d ? '56px' : '40px', secGap: d ? '16px' : '8px',
+      qsDisplay: d ? 'grid' : 'flex', qsCardW: d ? 'auto' : '260px', ctaW: d ? 'auto' : '100%',
+      guideCols: d ? '220px 1fr' : '1fr', badgeCols: d ? '1fr 1fr 1fr' : '1fr',
+      query: q, noResults, hasResults: !noResults,
+      onQuery: e => this.setState({ query: e.target.value }), clearQuery: () => this.setState({ query: '' }),
+      steps: this.steps.map(s => ({ ...s, icon: this.svg(s.icon, 44) })),
+      toc: this.sections.map((s, i) => ({ title: s.title, bg: o === i ? '#E8F3FF' : 'transparent', color: o === i ? '#3182F6' : '#4E5968', pick: () => this.setState({ open: i }) })),
+      sections: matched.map(s => { const i = this.sections.indexOf(s), open = d || o === i; return { ...s, icon: this.svg(s.icon), open, showChevron: !d, cursor: d ? 'default' : 'pointer', rot: open ? 'rotate(180deg)' : 'rotate(0)', hasTips: !!s.tips, tips: s.tips || [], toggle: () => { if (!d) this.setState({ open: o === i ? -1 : i }); } }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

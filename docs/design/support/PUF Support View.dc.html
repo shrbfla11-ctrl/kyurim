@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display:flex;flex-direction:column;gap:{{ gapMain }};font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28">
+  <div>
+    <h1 style="margin:0;font-size:{{ h1Size }};font-weight:700;letter-spacing:-0.03em;line-height:1.3">고객센터</h1>
+    <div style="position:relative;margin-top:20px;max-width:560px">
+      <svg style="position:absolute;left:16px;top:16px" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B95A1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg>
+      <input type="search" value="{{ query }}" onChange="{{ onQuery }}" placeholder="무엇을 도와드릴까요?" style="width:100%;height:52px;padding:0 16px 0 44px;border-radius:14px;border:1.5px solid transparent;background:#F2F4F6;font-size:15px;color:#191F28;outline:none;font-family:inherit" style-focus="border-color:#3182F6;background:#fff">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px;overflow-x:auto;padding-bottom:4px">
+      <sc-for list="{{ chips }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.pick }}" style="flex:none;height:36px;padding:0 14px;border:0;border-radius:999px;background:{{ c.bg }};color:{{ c.color }};font-size:14px;font-weight:600;cursor:pointer;transition:background .3s;font-family:inherit">{{ c.label }}</button></sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);padding:48px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px">
+      <span style="width:64px;height:64px;border-radius:999px;background:#F2F4F6;color:#8B95A1;display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5M8.5 8.5l5 5M13.5 8.5l-5 5"></path></svg></span>
+      <div><div style="font-size:18px;font-weight:700">'<span style="color:#3182F6">{{ query }}</span>'에 대한 결과가 없어요</div><p style="margin:8px 0 0;font-size:15px;line-height:1.6;color:#6B7684">검색어를 바꿔 보거나 아래에서 1:1 문의를 남겨 주세요.</p></div>
+      <button onClick="{{ clearQuery }}" style="height:44px;padding:0 18px;border:0;border-radius:14px;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer;transition:background .3s;font-family:inherit" style-hover="background:#E5E8EB">검색 초기화</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasResults }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:{{ groupGap }}">
+      <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+        <section>
+          <div style="font-size:14px;font-weight:700;color:#8B95A1;padding:0 4px 10px">{{ g.cat }}</div>
+          <div style="background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);padding:0 24px">
+            <sc-for list="{{ g.items }}" as="f" hint-placeholder-count="3">
+              <div style="border-bottom:1px solid {{ f.line }}">
+                <button onClick="{{ f.toggle }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;background:none;border:0;cursor:pointer;text-align:left;font-family:inherit">
+                  <span style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;font-family:Inter,sans-serif;font-size:15px;font-weight:700;color:#3182F6;line-height:1.5">Q</span><span style="font-size:16px;font-weight:600;color:#191F28;line-height:1.5">{{ f.q }}</span></span>
+                  <span style="flex:none;width:28px;height:28px;border-radius:999px;background:#F2F4F6;display:flex;align-items:center;justify-content:center;color:#6B7684;transition:transform .3s;transform:{{ f.rot }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span>
+                </button>
+                <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><div style="padding:0 0 18px 26px;font-size:15px;line-height:1.6;color:#4E5968">{{ f.a }}</div></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <div style="background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);padding:24px;display:flex;flex-direction:{{ ctaDir }};align-items:{{ ctaAlign }};justify-content:space-between;gap:16px">
+    <div><div style="font-size:18px;font-weight:700;letter-spacing:-0.02em">해결되지 않았나요?</div><p style="margin:4px 0 0;font-size:15px;line-height:1.6;color:#6B7684">1:1 문의를 남기면 영업일 기준 1일 이내에 답변드려요.</p></div>
+    <div style="display:flex;gap:8px;width:{{ ctaW }}"><a href="#" style="flex:1;height:44px;padding:0 18px;border-radius:14px;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap;transition:background .3s" style-hover="background:#E5E8EB">문의 내역</a><a href="#" style="flex:1;height:44px;padding:0 20px;border-radius:14px;background:#3182F6;color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap;transition:background .3s" style-hover="background:#1B64DA">문의하기</a></div>
+  </div>
+
+  <div style="background:#F9FAFB;border:1px solid #E5E8EB;border-radius:20px;padding:20px 24px;display:grid;grid-template-columns:{{ infoCols }};gap:16px">
+    <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:36px;height:36px;border-radius:10px;background:#fff;color:#3182F6;display:flex;align-items:center;justify-content:center;border:1px solid #E5E8EB"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><div><div style="font-size:13px;color:#8B95A1">운영 시간</div><div style="margin-top:2px;font-size:15px;font-weight:600">평일 <span style="font-family:Inter,sans-serif">10:00 – 18:00</span> (주말·공휴일 휴무)</div></div></div>
+    <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:36px;height:36px;border-radius:10px;background:#fff;color:#3182F6;display:flex;align-items:center;justify-content:center;border:1px solid #E5E8EB"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="M3 8l9 6 9-6"></path></svg></span><div><div style="font-size:13px;color:#8B95A1">이메일</div><div style="margin-top:2px;font-size:15px;font-weight:600;font-family:Inter,sans-serif">help@puf.kr</div></div></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:375,&quot;height&quot;:1200},&quot;desktop&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;query&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  state = { cat: '전체', open: '0-0', query: null };
+  cats = ['전체', '스캔·인식', '계정·로그인', '결과·정품', '제조사 도입', '기타'];
+  faq = [
+    ['스캔·인식', '스티커가 인식되지 않아요', '밝은 곳에서 스티커 전체가 사각형 안에 들어오도록 정면에서 맞춰 주세요. 반사광이 심하면 각도를 살짝 바꾸고, 10~15cm 거리에서 1~2초 고정하면 인식률이 높아져요.'],
+    ['스캔·인식', '플래시가 켜지지 않아요', '플래시는 어두운 환경에서 자동으로 켜져요. 수동으로 켜려면 카메라 화면 왼쪽 하단의 플래시 버튼을 눌러 주세요. 일부 브라우저는 플래시 제어를 지원하지 않아 기기 손전등을 이용해야 할 수 있어요.'],
+    ['스캔·인식', '카메라 권한을 허용했는데 화면이 검게 나와요', '다른 앱이 카메라를 사용 중이면 화면이 표시되지 않을 수 있어요. 카메라를 사용하는 다른 앱을 종료한 뒤 페이지를 새로 고침해 주세요.'],
+    ['계정·로그인', '소셜 로그인이 안 돼요', '카카오·Google 로그인 팝업이 차단되어 있는지 확인해 주세요. 같은 이메일로 이미 이메일 계정이 있다면 이메일 로그인 후 프로필에서 소셜 계정을 연결할 수 있어요.'],
+    ['계정·로그인', '비밀번호를 잊었어요', '로그인 화면의 "비밀번호 찾기"에서 가입한 이메일을 입력하면 재설정 링크를 보내드려요. 링크는 10분 동안 유효해요.'],
+    ['결과·정품', '위조 의심이 나왔어요', '등록된 원본 패턴과 일치하지 않을 때 표시돼요. 결과 화면을 공유 버튼으로 저장해 구매처 또는 제조사 고객센터에 문의해 주세요. 제품을 사용하기 전에 확인하시길 권해요.'],
+    ['결과·정품', '정품인데 스캔 횟수 경고가 떠요', '같은 스티커가 여러 번 스캔되면 표시돼요. 매장 시연이나 가족이 함께 확인한 경우처럼 정상적인 상황일 수도 있지만, 중고 거래 제품이라면 판매자에게 확인해 보세요.'],
+    ['결과·정품', '스캔 기록이 사라졌어요', '스캔 기록은 로그인한 계정에 저장돼요. 다른 계정으로 로그인했는지 확인해 주세요. 로그아웃 상태에서 스캔한 결과는 저장되지 않아요.'],
+    ['제조사 도입', '제조사인데 도입하고 싶어요', '제품 등록부터 스티커 발급, 스캔 모니터링까지 관리자 콘솔에서 이용할 수 있어요. 아래 1:1 문의에서 "제조사 도입"을 선택해 회사명과 제품군을 남겨 주시면 담당자가 연락드려요.'],
+    ['기타', '촬영한 사진은 어디에 저장되나요?', '어디에도 저장되지 않아요. 이미지는 패턴 대조 직후 즉시 삭제되며 서버에 남지 않아요. 스캔 기록에는 결과 정보만 저장돼요.']
+  ];
+  renderVals() {
+    const d = !!this.props.desktop, q = this.state.query ?? this.props.query ?? '', qq = q.trim().toLowerCase(), cat = this.state.cat, o = this.state.open;
+    const rows = this.faq.filter(([c, qs, a]) => (cat === '전체' || c === cat) && (!qq || (qs + a).toLowerCase().includes(qq)));
+    const groups = this.cats.slice(1).map(c => ({ cat: c, items: rows.filter(r => r[0] === c) })).filter(g => g.items.length).map((g, gi) => ({ cat: g.cat, items: g.items.map((r, i) => { const id = this.faq.indexOf(r) + '', open = o === id || (o === '0-0' && gi === 0 && i === 0); return { q: r[1], a: r[2], open, rot: open ? 'rotate(180deg)' : 'rotate(0)', line: i === g.items.length - 1 ? 'transparent' : '#F2F4F6', toggle: () => this.setState({ open: open ? '' : id }) }; }) }));
+    const noResults = rows.length === 0;
+    return {
+      h1Size: d ? '32px' : '28px', gapMain: d ? '40px' : '32px', groupGap: d ? '32px' : '24px',
+      ctaDir: d ? 'row' : 'column', ctaAlign: d ? 'center' : 'stretch', ctaW: d ? 'auto' : '100%', infoCols: d ? '1fr 1fr' : '1fr',
+      query: q, noResults, hasResults: !noResults, onQuery: e => this.setState({ query: e.target.value }), clearQuery: () => this.setState({ query: '' }),
+      chips: this.cats.map(c => ({ label: c, bg: cat === c ? '#191F28' : '#F2F4F6', color: cat === c ? '#fff' : '#4E5968', pick: () => this.setState({ cat: c }) })),
+      groups
+    };
+  }
+}
+</script>
+</body>
+</html>

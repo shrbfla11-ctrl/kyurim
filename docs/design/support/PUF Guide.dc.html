@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E5E8EB;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+*{box-sizing:border-box}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+button,input{font-family:inherit}
+input::placeholder{color:#B0B8C1}
+</style>
+</helmet>
+<div style="display:flex;flex-direction:column;gap:80px;padding:80px;align-items:flex-start">
+  <div style="display:flex;gap:48px;align-items:flex-start">
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">GUIDE · MOBILE</div>
+      <div data-screen-label="가이드 모바일" style="width:375px;background:#F2F4F6;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+        <div style="padding:24px 20px 32px"><dc-import name="PUF Guide View" hint-size="100%,1400px"></dc-import></div>
+        <dc-import name="PUF Tab Bar" active="home" hint-size="100%,84px"></dc-import>
+      </div>
+    </div>
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">GUIDE · MOBILE · 검색 결과 없음</div>
+      <div data-screen-label="가이드 검색 없음" style="width:375px;height:812px;background:#F2F4F6;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+        <div style="flex:1;padding:24px 20px 32px"><dc-import name="PUF Guide View" query="블루투스" hint-size="100%,500px"></dc-import></div>
+        <dc-import name="PUF Tab Bar" active="home" hint-size="100%,84px"></dc-import>
+      </div>
+    </div>
+  </div>
+  <div style="width:1440px">
+    <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">GUIDE · DESKTOP 1440</div>
+    <div data-screen-label="가이드 데스크톱" style="width:1440px;background:#F2F4F6;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+      <dc-import name="PUF Top Bar" active="guide" hint-size="100%,72px"></dc-import>
+      <div style="padding:48px 80px 96px;max-width:1200px"><dc-import name="PUF Guide View" desktop="{{ true }}" hint-size="100%,1600px"></dc-import></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

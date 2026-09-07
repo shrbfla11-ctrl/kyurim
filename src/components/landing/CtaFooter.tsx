@@ -12,10 +12,10 @@ export function Cta() {
             <br className="lg:hidden" /> 내 제품이 정품인지 확인해 보세요
           </h2>
           <p className="mt-2 text-[15px] leading-normal text-white/85 lg:text-[17px]">
-            가입 없이 카메라만 켜면 시작할 수 있어요.
+            로그인하고 카메라만 켜면 바로 시작할 수 있어요.
           </p>
         </div>
-        <Button href="/signup" variant="white" full className="mt-6 lg:mt-0 lg:w-auto lg:px-8">
+        <Button href="/scan" variant="white" full className="mt-6 lg:mt-0 lg:w-auto lg:px-8">
           스티커 스캔하기
         </Button>
       </div>

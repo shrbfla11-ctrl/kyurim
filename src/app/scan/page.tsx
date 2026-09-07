@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { ImagePlus, ShieldCheck } from "lucide-react";
 import { Nav } from "@/components/landing/Nav";
 import { TabBar } from "@/components/app/TabBar";
@@ -15,6 +16,7 @@ const tips = [
 
 export default async function ScanPage() {
   const user = await getUserSummary();
+  if (!user) redirect("/login?next=/scan");
   return (
     <>
       <div className="hidden lg:block">

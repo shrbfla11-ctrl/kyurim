@@ -21,7 +21,7 @@ export function Hero() {
         </p>
 
         <div className="mt-6 flex flex-col gap-2 lg:mt-10 lg:flex-row">
-          <Button href="#cta" icon={<CameraIcon size={22} />}>
+          <Button href="/scan" icon={<CameraIcon size={22} />}>
             스티커 스캔하기
           </Button>
           <Button href="#how" variant="secondary">
@@ -30,7 +30,7 @@ export function Hero() {
         </div>
 
         <div className="mt-10 hidden gap-6 text-sm text-gray-5 lg:flex">
-          {["촬영 이미지 미저장", "가입 없이 이용"].map((t) => (
+          {["촬영 이미지 미저장", "소셜 로그인 3초 가입"].map((t) => (
             <span key={t} className="flex items-center gap-2">
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-light text-green">
                 <CheckIcon size={12} />

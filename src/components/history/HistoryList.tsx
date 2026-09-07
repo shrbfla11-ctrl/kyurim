@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { SearchInput } from "@/components/ui/SearchInput";
 import type { HistoryItem, ScanOutcome } from "@/lib/scan/mock";
 
 type Filter = "all" | ScanOutcome;
@@ -33,16 +33,7 @@ export function HistoryList({ items }: { items: HistoryItem[] }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <label className="relative block">
-        <Search size={20} className="pointer-events-none absolute left-4 top-4 text-gray-4" />
-        <input
-          type="search"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="제품명, 제조사 검색"
-          className="h-[52px] w-full rounded-[14px] border-[1.5px] border-transparent bg-gray-1 pl-11 pr-4 text-[15px] text-ink outline-none transition-colors duration-300 focus:border-blue focus:bg-white"
-        />
-      </label>
+      <SearchInput placeholder="제품명, 제조사 검색" onSearch={setQ} />
 
       <div className="flex gap-2 overflow-x-auto">
         {filters.map((f) => {

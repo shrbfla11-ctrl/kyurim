@@ -12,8 +12,8 @@ export type NavKey = "verify" | "history" | "guide" | "support";
 const links: { key: NavKey; href: string; label: string }[] = [
   { key: "verify", href: "/scan", label: "정품 확인" },
   { key: "history", href: "/history", label: "스캔 기록" },
-  { key: "guide", href: "/#how", label: "이용 가이드" },
-  { key: "support", href: "/#faq", label: "고객센터" },
+  { key: "guide", href: "/guide", label: "이용 가이드" },
+  { key: "support", href: "/support", label: "고객센터" },
 ];
 
 export function Nav({ user, active }: { user: UserSummary | null; active?: NavKey }) {

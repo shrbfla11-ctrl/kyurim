@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E5E8EB;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+*{box-sizing:border-box}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+button,input,select,textarea{font-family:inherit}
+input::placeholder,textarea::placeholder{color:#B0B8C1}
+</style>
+</helmet>
+<div style="display:flex;flex-direction:column;gap:80px;padding:80px;align-items:flex-start">
+  <div style="display:flex;gap:48px;align-items:flex-start">
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">INQUIRY · MOBILE</div>
+      <div data-screen-label="문의 작성" style="width:375px;background:#F2F4F6;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+        <div style="height:56px;padding:0 8px;display:flex;align-items:center;justify-content:space-between"><button aria-label="뒤로" style="width:44px;height:44px;border:0;background:none;color:#191F28;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button><span style="font-size:16px;font-weight:600">문의하기</span><span style="width:44px"></span></div>
+        <div style="padding:8px 20px 40px"><dc-import name="PUF Inquiry Form" state="form" hint-size="100%,900px"></dc-import></div>
+      </div>
+    </div>
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">INQUIRY · MOBILE · 유효성 오류</div>
+      <div data-screen-label="문의 오류" style="width:375px;background:#F2F4F6;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+        <div style="height:56px;padding:0 8px;display:flex;align-items:center;justify-content:space-between"><button aria-label="뒤로" style="width:44px;height:44px;border:0;background:none;color:#191F28;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button><span style="font-size:16px;font-weight:600">문의하기</span><span style="width:44px"></span></div>
+        <div style="padding:8px 20px 40px"><dc-import name="PUF Inquiry Form" state="error" hint-size="100%,900px"></dc-import></div>
+      </div>
+    </div>
+    <div style="width:375px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">INQUIRY · MOBILE · 접수 완료</div>
+      <div data-screen-label="문의 완료" style="width:375px;height:812px;background:#F2F4F6;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column">
+        <div style="height:56px;padding:0 8px;display:flex;align-items:center;justify-content:flex-end"><button aria-label="닫기" style="width:44px;height:44px;border:0;background:none;color:#191F28;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+        <div style="flex:1;padding:24px 20px 40px;display:flex;flex-direction:column;justify-content:center"><dc-import name="PUF Inquiry Form" state="done" hint-size="100%,500px"></dc-import></div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:48px;align-items:flex-start">
+    <div style="width:1440px">
+      <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">INQUIRY · DESKTOP 1440</div>
+      <div data-screen-label="문의 데스크톱" style="width:1440px;min-height:900px;background:#F2F4F6;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+        <dc-import name="PUF Top Bar" active="support" hint-size="100%,72px"></dc-import>
+        <div style="padding:48px 80px 96px;display:grid;grid-template-columns:640px 320px;gap:48px;align-items:start">
+          <dc-import name="PUF Inquiry Form" state="form" desktop="{{ true }}" hint-size="100%,900px"></dc-import>
+          <div style="position:sticky;top:24px;display:flex;flex-direction:column;gap:16px">
+            <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06)"><div style="font-size:16px;font-weight:700">빠른 답변을 위한 팁</div><ul style="margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.6;color:#4E5968"><li style="display:flex;gap:8px"><span style="color:#3182F6;font-weight:700">·</span>사용 중인 기기와 브라우저</li><li style="display:flex;gap:8px"><span style="color:#3182F6;font-weight:700">·</span>스캔한 제품명과 결과 화면 스크린샷</li><li style="display:flex;gap:8px"><span style="color:#3182F6;font-weight:700">·</span>문제가 발생한 시간</li></ul></div>
+            <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06)"><div style="font-size:13px;color:#8B95A1">운영 시간</div><div style="margin-top:4px;font-size:15px;font-weight:600">평일 <span style="font-family:Inter,sans-serif">10:00 – 18:00</span></div><div style="margin-top:12px;font-size:13px;color:#8B95A1">이메일</div><div style="margin-top:4px;font-size:15px;font-weight:600;font-family:Inter,sans-serif">help@puf.kr</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
