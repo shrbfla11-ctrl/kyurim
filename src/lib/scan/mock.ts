@@ -75,6 +75,6 @@ export const mockHistory: HistoryItem[] = [
 
 export const outcomeMeta: Record<ScanOutcome, { badge: string; headline: string; desc: string }> = {
   genuine: { badge: "정품 확인", headline: "정품이에요", desc: "등록된 원본 패턴과 일치해요. 안심하고 사용하세요." },
-  unverified: { badge: "확인 불가", headline: "판별할 수 없어요", desc: "패턴을 충분히 읽지 못했어요. 밝은 곳에서 다시 스캔해 주세요." },
+  unverified: { badge: "확인 불가", headline: "판별할 수 없어요", desc: "패턴을 충분히 읽지 못했어요. 주변 빛을 줄이고 다시 스캔해 주세요." },
   fake: { badge: "위조 의심", headline: "위조가 의심돼요", desc: "등록된 원본 패턴과 일치하지 않아요. 구매처에 문의해 주세요." },
 };

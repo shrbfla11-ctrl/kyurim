@@ -4,7 +4,7 @@ const steps = [
   {
     Icon: CameraIcon,
     title: "제품의 스티커에 카메라를 비추세요",
-    desc: "밝은 곳에서 PUF 스티커 전체가 사각형 안에 들어오도록 맞춰 주세요.",
+    desc: "PUF 스티커 전체가 사각형 안에 들어오도록 맞추고 촬영을 누르세요. 플래시가 빛을 먹인 뒤 자동으로 찍혀요.",
   },
   {
     Icon: ScanIcon,

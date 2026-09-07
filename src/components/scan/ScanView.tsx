@@ -5,13 +5,21 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CircleHelp, Image as ImageIcon, ShieldCheck, TriangleAlert, X, Zap, ZapOff } from "lucide-react";
 
-type ScanState = "idle" | "scanning" | "error";
+type ScanState = "idle" | "charging" | "capturing" | "scanning" | "error";
+
+/** 축광 비즈에 빛을 먹이는 시간(ms). 실제 스티커로 테스트하며 조정합니다. */
+const CHARGE_MS = 2500;
+/** 플래시를 끈 뒤 카메라 노출이 어두운 장면에 맞춰지도록 기다리는 시간(ms) */
+const SETTLE_MS = 400;
+
+const sleep = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
 
 const roundBtn =
   "flex items-center justify-center rounded-full border-0 bg-white/12 text-white transition duration-300 hover:bg-white/22 disabled:opacity-50";
 
 /**
- * 카메라 스캔 화면. 기기 카메라를 열어 스티커를 촬영하고 /api/scan 으로 보낸 뒤 결과 화면으로 이동합니다.
+ * 카메라 스캔 화면. 스티커의 축광 비즈는 플래시로 빛을 먹인 뒤 플래시를 끄고 찍어야 패턴이 보입니다.
+ * 촬영 버튼 한 번으로 [플래시 ON 충전 → 플래시 OFF → 자동 촬영 → /api/scan] 순서가 진행됩니다.
  * 카메라를 쓸 수 없는 환경에서는 디자인의 어두운 배경 위에 갤러리 업로드만 제공합니다.
  */
 export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) {
@@ -21,7 +29,8 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
   const streamRef = useRef<MediaStream | null>(null);
   const [state, setState] = useState<ScanState>("idle");
   const [hasCamera, setHasCamera] = useState(false);
-  const [torch, setTorch] = useState(false);
+  const [torchSupported, setTorchSupported] = useState(false);
+  const [torchOn, setTorchOn] = useState(false);
   const [errorMsg, setErrorMsg] = useState<{ title: string; desc: string } | null>(null);
 
   // 카메라 열기
@@ -44,17 +53,10 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
           await videoRef.current.play().catch(() => undefined);
         }
         setHasCamera(true);
-        // 플래시(토치)는 기본으로 켭니다. 지원하지 않는 기기(iPhone 등)에서는 조용히 넘어갑니다.
+        // 플래시는 촬영 시퀀스에서만 잠깐 켭니다. 여기서는 지원 여부만 확인합니다.
         const track = stream.getVideoTracks()[0];
         const caps = track?.getCapabilities?.() as (MediaTrackCapabilities & { torch?: boolean }) | undefined;
-        if (caps?.torch) {
-          try {
-            await track.applyConstraints({ advanced: [{ torch: true } as MediaTrackConstraintSet] });
-            setTorch(true);
-          } catch {
-            /* 켜지지 않아도 촬영은 가능 */
-          }
-        }
+        setTorchSupported(!!caps?.torch);
       } catch {
         setHasCamera(false);
       }
@@ -65,6 +67,18 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
       streamRef.current?.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
     };
+  }, []);
+
+  const setTorch = useCallback(async (on: boolean) => {
+    const track = streamRef.current?.getVideoTracks()[0];
+    if (!track) return false;
+    try {
+      await track.applyConstraints({ advanced: [{ torch: on } as MediaTrackConstraintSet] });
+      setTorchOn(on);
+      return true;
+    } catch {
+      return false;
+    }
   }, []);
 
   const showError = useCallback((title: string, desc: string) => {
@@ -94,12 +108,23 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
     [router, showError],
   );
 
-  function capture() {
-    if (state === "scanning") return;
+  async function capture() {
+    if (state !== "idle") return;
     const video = videoRef.current;
     if (!hasCamera || !video || video.videoWidth === 0) {
       showError("카메라를 사용할 수 없어요", "카메라 권한을 허용하거나 갤러리에서 이미지를 선택해 주세요.");
       return;
+    }
+    // 1) 플래시로 비즈에 빛을 먹이고 2) 플래시를 끈 뒤 노출이 안정되면 3) 촬영합니다.
+    if (torchSupported) {
+      setState("charging");
+      const lit = await setTorch(true);
+      if (lit) await sleep(CHARGE_MS);
+      await setTorch(false);
+      setState("capturing");
+      await sleep(SETTLE_MS);
+    } else {
+      setState("capturing");
     }
     // 가이드 프레임(중앙 정사각형) 영역만 잘라서 보냅니다.
     const side = Math.min(video.videoWidth, video.videoHeight) * 0.7;
@@ -113,7 +138,7 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
     ctx.drawImage(video, sx, sy, side, side, 0, 0, 1024, 1024);
     canvas.toBlob(
       (blob) => {
-        if (!blob) return showError("초점이 맞지 않아요", "밝은 곳에서 스티커에 가까이 대고 다시 촬영해 주세요.");
+        if (!blob) return showError("초점이 맞지 않아요", "스티커에 가까이 대고 흔들리지 않게 다시 촬영해 주세요.");
         analyze(blob);
       },
       "image/jpeg",
@@ -127,8 +152,17 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
     if (file) analyze(file);
   }
 
+  const charging = state === "charging";
+  const busy = state !== "idle" && state !== "error";
   const scanning = state === "scanning";
   const isError = state === "error";
+  const centerText = charging
+    ? "빛을 충전하고 있어요…"
+    : state === "capturing"
+      ? "촬영 중이에요"
+      : scanning
+        ? "패턴을 대조하고 있어요…"
+        : "스티커를 사각형 안에 맞춰 주세요";
   const frameColor = isError ? "border-red" : "border-blue";
   const corner = `absolute h-9 w-9 ${frameColor} transition-colors duration-300`;
 
@@ -165,8 +199,8 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
       {/* 중앙 */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-6 p-6">
         <div className="flex items-center gap-2 text-base font-semibold text-white/90">
-          {scanning && <span className="block h-2 w-2 animate-pulse-dot rounded-full bg-blue" />}
-          {scanning ? "패턴을 대조하고 있어요…" : "스티커를 사각형 안에 맞춰 주세요"}
+          {busy && <span className={`block h-2 w-2 animate-pulse-dot rounded-full ${charging ? "bg-amber" : "bg-blue"}`} />}
+          {centerText}
         </div>
         <div className={`relative aspect-square ${frameClass}`}>
           <span className={`${corner} left-0 top-0 rounded-tl-xl border-l-[3px] border-t-[3px]`} />
@@ -188,41 +222,43 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
           )}
         </div>
         <div className="h-6 text-sm text-white/70">
-          {scanning
+          {busy
             ? "움직이지 말고 잠시만 기다려 주세요"
             : isError
-              ? "초점과 조명을 확인해 주세요"
+              ? "초점과 주변 조명을 확인해 주세요"
               : !hasCamera
                 ? "카메라를 켜거나 갤러리에서 이미지를 선택해 주세요"
-                : !torch
-                  ? "이 기기는 플래시를 지원하지 않아요. 밝은 곳에서 촬영해 주세요"
-                  : ""}
+                : !torchSupported
+                  ? "이 기기는 플래시를 지원하지 않아요. 밝은 빛을 쬔 스티커를 어두운 곳에서 촬영해 주세요"
+                  : "촬영을 누르면 플래시가 잠깐 켜졌다가 꺼진 뒤 자동으로 찍혀요"}
         </div>
       </div>
 
       {/* 하단 */}
       <div className="relative z-10 flex flex-col items-center gap-5 px-8 pb-6">
         <div className="flex w-full items-center justify-between">
-          {/* 플래시는 패턴 인식에 필수라 항상 켜 둡니다. 상태만 표시하고 끌 수 없습니다. */}
+          {/* 플래시는 촬영 시퀀스 안에서 자동으로 켜졌다 꺼집니다. 상태만 표시합니다. */}
           <span
             role="status"
-            aria-label={torch ? "플래시 켜짐" : "플래시 사용 불가"}
-            className={`flex h-14 w-14 items-center justify-center rounded-full ${torch ? "bg-amber text-ink" : "bg-white/12 text-white/40"}`}
+            aria-label={!torchSupported ? "플래시 사용 불가" : torchOn ? "플래시 충전 중" : "플래시 대기"}
+            className={`flex h-14 w-14 items-center justify-center rounded-full transition-colors duration-300 ${
+              !torchSupported ? "bg-white/12 text-white/40" : torchOn ? "bg-amber text-ink" : "bg-white/12 text-white"
+            }`}
           >
-            {torch ? <Zap size={24} fill="currentColor" /> : <ZapOff size={24} />}
+            {torchSupported ? <Zap size={24} fill={torchOn ? "currentColor" : "none"} /> : <ZapOff size={24} />}
           </span>
           <button
             type="button"
             aria-label="촬영"
             onClick={capture}
-            disabled={scanning}
+            disabled={busy}
             className="flex h-20 w-20 rounded-full border-4 border-white bg-transparent p-1 transition duration-300 hover:brightness-95"
           >
-            <span className={`flex flex-1 items-center justify-center rounded-full transition-colors duration-300 ${scanning ? "bg-blue" : "bg-white"}`}>
-              {scanning && <span className="block h-[22px] w-[22px] animate-spin-fast rounded-full border-[3px] border-white/35 border-t-white" />}
+            <span className={`flex flex-1 items-center justify-center rounded-full transition-colors duration-300 ${charging ? "bg-amber" : busy ? "bg-blue" : "bg-white"}`}>
+              {busy && <span className="block h-[22px] w-[22px] animate-spin-fast rounded-full border-[3px] border-white/35 border-t-white" />}
             </span>
           </button>
-          <button type="button" aria-label="갤러리" onClick={() => fileRef.current?.click()} disabled={scanning} className={`${roundBtn} h-14 w-14`}>
+          <button type="button" aria-label="갤러리" onClick={() => fileRef.current?.click()} disabled={busy} className={`${roundBtn} h-14 w-14`}>
             <ImageIcon size={24} />
           </button>
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={pickFile} />

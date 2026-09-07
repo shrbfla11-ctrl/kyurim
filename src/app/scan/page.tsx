@@ -9,7 +9,7 @@ import { getUserSummary } from "@/lib/auth/user";
 export const metadata: Metadata = { title: "정품 확인 - PUF" };
 
 const tips = [
-  { title: "밝은 곳에서 촬영하세요", desc: "그림자나 반사광이 패턴을 가리지 않게 해 주세요." },
+  { title: "촬영 버튼만 누르세요", desc: "플래시가 잠깐 켜져 스티커에 빛을 먹인 뒤, 꺼진 상태에서 자동으로 찍혀요." },
   { title: "스티커를 정면으로", desc: "사각형 안에 스티커 전체가 들어오도록 맞춰 주세요." },
   { title: "잠시 고정하세요", desc: "패턴 대조에 1~2초가 걸려요." },
 ];
