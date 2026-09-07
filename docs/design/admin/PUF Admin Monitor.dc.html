@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E5E8EB;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+*{box-sizing:border-box}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+button,input,select{font-family:inherit}
+</style>
+</helmet>
+<div style="padding:80px;display:inline-block">
+<div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">ADMIN · SCAN MONITORING · 1440</div>
+<div data-screen-label="스캔 모니터링" style="border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+<dc-import name="PUF Admin Shell" active="monitor" title="스캔 모니터링" subtitle="실시간 스캔 로그를 결과별로 확인할 수 있어요." hint-size="1440px,900px">
+  <div style="background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;border-bottom:1px solid #F2F4F6">
+      <div style="display:flex;gap:8px">
+        <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.pick }}" style="height:36px;padding:0 14px;border:0;border-radius:999px;background:{{ c.bg }};color:{{ c.color }};font-size:14px;font-weight:600;cursor:pointer;transition:background .3s">{{ c.label }}<span style="margin-left:6px;font-family:Inter,sans-serif;opacity:.7">{{ c.n }}</span></button></sc-for>
+      </div>
+      <div style="display:flex;gap:8px">
+        <select style="height:40px;padding:0 14px;border-radius:12px;border:0;background:#F2F4F6;font-size:14px;font-weight:600;color:#4E5968"><option>오늘</option><option>최근 7일</option><option>최근 30일</option></select>
+        <button style="height:40px;padding:0 14px;border:0;border-radius:12px;background:#F2F4F6;color:#4E5968;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .3s" style-hover="background:#E5E8EB"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3M12 4v12M7 11l5 5 5-5"></path></svg>CSV</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:180px 1fr 130px 110px 160px;padding:12px 24px;font-size:13px;font-weight:600;color:#8B95A1;border-bottom:1px solid #F2F4F6"><span>시간</span><span>제품</span><span>결과</span><span style="text-align:right">스캔 횟수</span><span style="text-align:right">지역</span></div>
+    <sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+      <div style="display:grid;grid-template-columns:180px 1fr 130px 110px 160px;align-items:center;padding:14px 24px;font-size:15px;border-bottom:1px solid #F2F4F6;transition:background .3s" style-hover="background:#F9FAFB">
+        <span style="font-family:Inter,sans-serif;color:#6B7684;font-size:14px">{{ r.time }}</span>
+        <span><span style="display:block;font-weight:600">{{ r.product }}</span><span style="display:block;font-size:13px;color:#8B95A1;font-family:Inter,sans-serif">{{ r.id }}</span></span>
+        <span><span style="font-size:12px;font-weight:700;color:{{ r.color }};background:{{ r.bg }};padding:5px 10px;border-radius:999px">{{ r.badge }}</span></span>
+        <span style="text-align:right;font-family:Inter,sans-serif;font-weight:600;color:{{ r.countColor }}">{{ r.count }}</span>
+        <span style="text-align:right;color:#6B7684">{{ r.region }}</span>
+      </div>
+    </sc-for>
+    <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:64px;text-align:center;font-size:15px;color:#8B95A1">해당 조건의 스캔 로그가 없어요.</div></sc-if>
+  </div>
+</dc-import>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { filter: 'all' };
+  kinds = { genuine: ['정품', '#14B866', '#E6F8EF'], unverified: ['확인 불가', '#B57A0B', '#FFF8E1'], fake: ['위조 의심', '#F04452', '#FEECEE'] };
+  data = [
+    ['09.07 14:32:08', '글로우 리페어 세럼 50ml', 'PUF-LM24-000118', 'genuine', 1, '서울 강남'],
+    ['09.07 14:31:44', '하이드라 선크림 SPF50+', 'PUF-LM24-004402', 'genuine', 2, '부산 해운대'],
+    ['09.07 14:30:12', '시그니처 레더 카드지갑', 'PUF-MD23-000077', 'fake', 27, '인천 부평'],
+    ['09.07 14:28:57', '에어핏 무선 이어버드', 'PUF-SW24-009310', 'genuine', 1, '대구 수성'],
+    ['09.07 14:27:30', '프리미엄 오메가3 90캡슐', 'PUF-HL24-001205', 'unverified', 3, '경기 성남'],
+    ['09.07 14:25:03', '글로우 리페어 세럼 50ml', 'PUF-LM24-000097', 'genuine', 1, '서울 마포'],
+    ['09.07 14:21:19', '그래핀 보조배터리 10000', 'PUF-VL24-000512', 'genuine', 1, '광주 서구'],
+    ['09.07 14:18:46', '시그니처 레더 카드지갑', 'PUF-MD23-000077', 'fake', 26, '인천 부평'],
+    ['09.07 14:15:02', '하이드라 선크림 SPF50+', 'PUF-LM24-003991', 'unverified', 1, '대전 유성'],
+    ['09.07 14:12:37', '에어핏 무선 이어버드', 'PUF-SW24-008874', 'genuine', 1, '서울 송파']
+  ];
+  renderVals() {
+    const f = this.state.filter, labels = { all: '전체', genuine: '정품', unverified: '확인 불가', fake: '위조 의심' };
+    const rows = this.data.filter(r => f === 'all' || r[3] === f).map(([time, product, id, k, count, region]) => { const [badge, color, bg] = this.kinds[k]; return { time, product, id, badge, color, bg, count, region, countColor: count >= 10 ? '#F04452' : '#191F28' }; });
+    return {
+      chips: Object.keys(labels).map(k => ({ label: labels[k], n: k === 'all' ? this.data.length : this.data.filter(r => r[3] === k).length, bg: f === k ? '#191F28' : '#F2F4F6', color: f === k ? '#fff' : '#4E5968', pick: () => this.setState({ filter: k }) })),
+      rows, isEmpty: rows.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

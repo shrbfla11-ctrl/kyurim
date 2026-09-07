@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E5E8EB;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+*{box-sizing:border-box}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+button,input,select,textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="padding:80px;display:flex;flex-direction:column;gap:80px;align-items:flex-start">
+<div>
+<div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">ADMIN · PRODUCTS · 1440</div>
+<div data-screen-label="제품 목록" style="border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+<dc-import name="PUF Admin Shell" active="products" title="제품 관리" subtitle="등록된 제품과 발급된 스티커 수를 관리해요." action="제품 등록" on-action="{{ openModal }}" hint-size="1440px,900px">
+  <div style="background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);overflow:hidden">
+    <div style="display:flex;gap:8px;padding:16px 24px;border-bottom:1px solid #F2F4F6">
+      <div style="position:relative;flex:1;max-width:360px"><svg style="position:absolute;left:14px;top:13px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B95A1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg><input type="search" placeholder="제품명 검색" style="width:100%;height:44px;padding:0 14px 0 40px;border-radius:12px;border:1.5px solid transparent;background:#F2F4F6;font-size:14px;outline:none" style-focus="border-color:#3182F6;background:#fff"></div>
+      <select style="height:44px;padding:0 14px;border-radius:12px;border:0;background:#F2F4F6;font-size:14px;font-weight:600;color:#4E5968"><option>전체 카테고리</option><option>스킨케어</option><option>전자기기</option><option>건강식품</option><option>패션잡화</option></select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 140px 140px 140px 80px;padding:12px 24px;font-size:13px;font-weight:600;color:#8B95A1;border-bottom:1px solid #F2F4F6"><span>제품명</span><span>카테고리</span><span style="text-align:right">발급 스티커</span><span style="text-align:right">등록일</span><span></span></div>
+    <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+      <div style="display:grid;grid-template-columns:1fr 140px 140px 140px 80px;align-items:center;padding:12px 24px;font-size:15px;border-bottom:1px solid #F2F4F6;transition:background .3s" style-hover="background:#F9FAFB">
+        <span style="display:flex;align-items:center;gap:12px"><span style="flex:none;width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#EEF5FF,#DCEBFF);display:flex;align-items:center;justify-content:center"><span style="width:14px;height:22px;border-radius:3px 3px 5px 5px;background:linear-gradient(180deg,#fff,#E5E8EB);display:block"></span></span><span><span style="display:block;font-weight:600">{{ r.name }}</span><span style="display:block;font-size:13px;color:#8B95A1">{{ r.maker }}</span></span></span>
+        <span style="color:#4E5968">{{ r.cat }}</span>
+        <span style="text-align:right;font-family:Inter,sans-serif">{{ r.count }}</span>
+        <span style="text-align:right;font-family:Inter,sans-serif;color:#6B7684;font-size:14px">{{ r.date }}</span>
+        <span style="display:flex;justify-content:flex-end"><button aria-label="더보기" style="width:36px;height:36px;border:0;border-radius:10px;background:none;color:#8B95A1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .3s" style-hover="background:#F2F4F6"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button></span>
+      </div>
+    </sc-for>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;font-size:14px;color:#6B7684"><span style="white-space:nowrap;flex:none">총 <span style="font-family:Inter,sans-serif;font-weight:600;color:#191F28">24</span>개 제품</span><span style="display:flex;gap:4px"><button style="width:36px;height:36px;border:0;border-radius:10px;background:#3182F6;color:#fff;font-weight:700;font-family:Inter,sans-serif;cursor:pointer">1</button><button style="width:36px;height:36px;border:0;border-radius:10px;background:none;color:#4E5968;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;transition:background .3s" style-hover="background:#F2F4F6">2</button><button style="width:36px;height:36px;border:0;border-radius:10px;background:none;color:#4E5968;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;transition:background .3s" style-hover="background:#F2F4F6">3</button></span></div>
+  </div>
+</dc-import>
+</div>
+</div>
+
+<div>
+<div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">ADMIN · PRODUCTS · CREATE MODAL</div>
+<div data-screen-label="제품 등록 모달" style="position:relative;width:1440px;height:900px;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+  <div style="position:absolute;inset:0;filter:blur(0);"><dc-import name="PUF Admin Shell" active="products" title="제품 관리" subtitle="등록된 제품과 발급된 스티커 수를 관리해요." action="제품 등록" hint-size="1440px,900px"><div style="height:600px;background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06)"></div></dc-import></div>
+  <div style="position:absolute;inset:0;background:rgba(25,31,40,0.4);display:flex;align-items:center;justify-content:center">
+    <div style="width:560px;background:#fff;border-radius:24px;box-shadow:0 24px 64px rgba(25,31,40,0.24);padding:32px;display:flex;flex-direction:column;gap:24px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between"><div><h2 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.03em">제품 등록</h2><p style="margin:4px 0 0;font-size:14px;color:#6B7684">등록 후 스티커를 발급할 수 있어요.</p></div><button aria-label="닫기" style="width:40px;height:40px;border:0;border-radius:999px;background:#F2F4F6;color:#4E5968;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .3s" style-hover="background:#E5E8EB"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+      <div style="display:flex;gap:20px;align-items:flex-start">
+        <div style="flex:none;width:140px;height:140px;border-radius:16px;border:1.5px dashed #B8C0CB;background:#F9FAFB;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#8B95A1;cursor:pointer;transition:border-color .3s,background .3s" style-hover="border-color:#3182F6;background:#E8F3FF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><circle cx="9" cy="10" r="1.5"></circle><path d="M21 16l-5-5-9 8"></path></svg><span style="font-size:12px;font-weight:600">이미지 업로드</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+          <label><span style="display:block;font-size:13px;font-weight:600;color:#4E5968;margin-bottom:6px">제품명</span><input type="text" placeholder="예: 글로우 리페어 세럼 50ml" style="width:100%;height:48px;padding:0 14px;border-radius:12px;border:1.5px solid transparent;background:#F2F4F6;font-size:15px;outline:none" style-focus="border-color:#3182F6;background:#fff"></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <label><span style="display:block;font-size:13px;font-weight:600;color:#4E5968;margin-bottom:6px">카테고리</span><select style="width:100%;height:48px;padding:0 14px;border-radius:12px;border:1.5px solid transparent;background:#F2F4F6;font-size:15px;color:#191F28;outline:none"><option>스킨케어</option><option>전자기기</option><option>건강식품</option><option>패션잡화</option></select></label>
+            <label><span style="display:block;font-size:13px;font-weight:600;color:#4E5968;margin-bottom:6px">제조사</span><input type="text" defaultValue="루미에르 코스메틱" style="width:100%;height:48px;padding:0 14px;border-radius:12px;border:1.5px solid transparent;background:#F2F4F6;font-size:15px;outline:none" style-focus="border-color:#3182F6;background:#fff"></label>
+          </div>
+        </div>
+      </div>
+      <label><span style="display:block;font-size:13px;font-weight:600;color:#4E5968;margin-bottom:6px">제품 설명</span><textarea placeholder="소비자에게 표시되는 제품 설명을 입력하세요." style="width:100%;height:96px;padding:12px 14px;border-radius:12px;border:1.5px solid transparent;background:#F2F4F6;font-size:15px;line-height:1.5;outline:none;resize:none" style-focus="border-color:#3182F6;background:#fff"></textarea></label>
+      <div style="display:flex;gap:8px;justify-content:flex-end"><button style="height:48px;padding:0 20px;border:0;border-radius:14px;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer;transition:background .3s" style-hover="background:#E5E8EB">취소</button><button style="height:48px;padding:0 24px;border:0;border-radius:14px;background:#3182F6;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:background .3s" style-hover="background:#1B64DA">등록하기</button></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  data = [
+    ['글로우 리페어 세럼 50ml', '루미에르 코스메틱', '스킨케어', '12,000', '2026.06.12'],
+    ['하이드라 선크림 SPF50+', '루미에르 코스메틱', '스킨케어', '8,400', '2026.06.12'],
+    ['에어핏 무선 이어버드', '소닉웨이브', '전자기기', '15,000', '2026.05.28'],
+    ['프리미엄 오메가3 90캡슐', '헬씨라이프', '건강식품', '6,000', '2026.05.03'],
+    ['시그니처 레더 카드지갑', '메종 도레', '패션잡화', '3,200', '2026.04.19'],
+    ['그래핀 보조배터리 10000', '볼트랩', '전자기기', '3,600', '2026.03.30']
+  ];
+  renderVals() {
+    return { rows: this.data.map(([name, maker, cat, count, date]) => ({ name, maker, cat, count, date })), openModal: () => {} };
+  }
+}
+</script>
+</body>
+</html>

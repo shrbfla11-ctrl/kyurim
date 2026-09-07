@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E5E8EB;font-family:Pretendard,Inter,'Noto Sans KR',sans-serif;color:#191F28;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+*{box-sizing:border-box}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="padding:80px;display:inline-block">
+<div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6B7684;margin-bottom:16px">ADMIN · DASHBOARD · 1440</div>
+<div data-screen-label="관리자 대시보드" style="border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+<dc-import name="PUF Admin Shell" active="dashboard" title="대시보드" subtitle="오늘의 정품 확인 현황을 한눈에 볼 수 있어요." hint-size="1440px,900px">
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+    <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06)"><div style="font-size:14px;font-weight:600;color:#6B7684">오늘 스캔</div><div style="margin-top:12px;font-family:Inter,sans-serif;font-size:32px;font-weight:700;letter-spacing:-0.03em">1,284</div><div style="margin-top:8px;font-size:13px;color:#14B866;font-weight:600">▲ 12.4% 어제 대비</div></div>
+    <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06)"><div style="font-size:14px;font-weight:600;color:#6B7684">정품 비율</div><div style="margin-top:12px;font-family:Inter,sans-serif;font-size:32px;font-weight:700;letter-spacing:-0.03em">97.6<span style="font-size:20px;color:#8B95A1">%</span></div><div style="margin-top:8px;font-size:13px;color:#8B95A1;font-weight:600">최근 7일 평균 97.1%</div></div>
+    <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06)"><div style="font-size:14px;font-weight:600;color:#6B7684">위조 의심</div><div style="margin-top:12px;font-family:Inter,sans-serif;font-size:32px;font-weight:700;letter-spacing:-0.03em;color:#F04452">7</div><div style="margin-top:8px;font-size:13px;color:#F04452;font-weight:600">▲ 3건 어제 대비</div></div>
+    <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06)"><div style="font-size:14px;font-weight:600;color:#6B7684">발급 스티커</div><div style="margin-top:12px;font-family:Inter,sans-serif;font-size:32px;font-weight:700;letter-spacing:-0.03em">48,200</div><div style="margin-top:8px;font-size:13px;color:#8B95A1;font-weight:600">이번 달 +6,000</div></div>
+  </div>
+  <div style="margin-top:24px;background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:24px 24px 16px"><div style="font-size:18px;font-weight:700">최근 스캔</div><a href="#" style="font-size:14px;font-weight:600;color:#6B7684">전체 보기</a></div>
+    <div style="display:grid;grid-template-columns:160px 1fr 120px 100px 120px;padding:0 24px 12px;font-size:13px;font-weight:600;color:#8B95A1;border-bottom:1px solid #F2F4F6"><span>시간</span><span>제품</span><span>결과</span><span style="text-align:right">스캔 횟수</span><span style="text-align:right">지역</span></div>
+    <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+      <div style="display:grid;grid-template-columns:160px 1fr 120px 100px 120px;align-items:center;padding:14px 24px;font-size:15px;border-bottom:1px solid #F2F4F6;transition:background .3s" style-hover="background:#F9FAFB">
+        <span style="font-family:Inter,sans-serif;color:#6B7684;font-size:14px">{{ r.time }}</span>
+        <span style="font-weight:600">{{ r.product }}</span>
+        <span><span style="font-size:12px;font-weight:700;color:{{ r.color }};background:{{ r.bg }};padding:5px 10px;border-radius:999px">{{ r.badge }}</span></span>
+        <span style="text-align:right;font-family:Inter,sans-serif;color:{{ r.countColor }}">{{ r.count }}</span>
+        <span style="text-align:right;color:#6B7684">{{ r.region }}</span>
+      </div>
+    </sc-for>
+  </div>
+</dc-import>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  kinds = { genuine: ['정품', '#14B866', '#E6F8EF'], unverified: ['확인 불가', '#B57A0B', '#FFF8E1'], fake: ['위조 의심', '#F04452', '#FEECEE'] };
+  data = [
+    ['14:32:08', '글로우 리페어 세럼 50ml', 'genuine', 1, '서울 강남'],
+    ['14:31:44', '하이드라 선크림 SPF50+', 'genuine', 2, '부산 해운대'],
+    ['14:30:12', '시그니처 레더 카드지갑', 'fake', 27, '인천 부평'],
+    ['14:28:57', '에어핏 무선 이어버드', 'genuine', 1, '대구 수성'],
+    ['14:27:30', '프리미엄 오메가3 90캡슐', 'unverified', 3, '경기 성남'],
+    ['14:25:03', '글로우 리페어 세럼 50ml', 'genuine', 1, '서울 마포']
+  ];
+  renderVals() {
+    return { rows: this.data.map(([time, product, k, count, region]) => { const [badge, color, bg] = this.kinds[k]; return { time, product, badge, color, bg, count, region, countColor: count >= 10 ? '#F04452' : '#191F28' }; }) };
+  }
+}
+</script>
+</body>
+</html>
