@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 
 export function Cta() {
@@ -33,8 +34,8 @@ export function Footer() {
         </p>
       </div>
       <div className="mt-4 flex gap-4 text-sm font-semibold lg:mt-0 lg:gap-6">
-        <a href="#" className="text-gray-5">이용약관</a>
-        <a href="#" className="text-gray-5">개인정보처리방침</a>
+        <Link href="/terms" className="text-gray-5 hover:text-ink">이용약관</Link>
+        <Link href="/privacy" className="text-gray-5 hover:text-ink">개인정보처리방침</Link>
       </div>
       <p className="mt-6 text-xs leading-relaxed text-gray-4 lg:hidden">
         인증 결과는 스티커 패턴 대조에 기반하며, 제품의 품질이나 안전성을 보증하지 않습니다.

@@ -9,11 +9,19 @@ export async function getUserSummary(): Promise<UserSummary | null> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
-  const meta = user.user_metadata ?? {};
+  // 공급자별로 메타데이터 키가 다릅니다. (이메일 가입: name / Google: name, picture / Kakao: full_name, preferred_username)
+  const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
+  const pick = (...keys: string[]) => {
+    for (const k of keys) {
+      const v = meta[k];
+      if (typeof v === "string" && v.trim()) return v.trim();
+    }
+    return null;
+  };
   return {
     email: user.email ?? null,
-    name: (meta.name as string | undefined) ?? displayNameFor(user.email),
-    avatarUrl: (meta.avatar_url as string | undefined) ?? null,
+    name: pick("name", "full_name", "preferred_username", "nickname") ?? displayNameFor(user.email),
+    avatarUrl: pick("avatar_url", "picture"),
     isAdmin: isAdminEmail(user.email),
   };
 }

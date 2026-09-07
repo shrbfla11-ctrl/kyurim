@@ -165,14 +165,14 @@ export function SignupForm() {
         <Checkbox
           checked={agree.terms}
           onChange={(e) => setAgree({ ...agree, terms: e.target.checked })}
-          right={<a href="#" className="text-[13px] text-gray-4">보기</a>}
+          right={<Link href="/terms" target="_blank" className="text-[13px] text-gray-4 hover:text-ink">보기</Link>}
         >
           <span><span className="font-semibold text-blue">[필수]</span> 이용약관 동의</span>
         </Checkbox>
         <Checkbox
           checked={agree.privacy}
           onChange={(e) => setAgree({ ...agree, privacy: e.target.checked })}
-          right={<a href="#" className="text-[13px] text-gray-4">보기</a>}
+          right={<Link href="/privacy" target="_blank" className="text-[13px] text-gray-4 hover:text-ink">보기</Link>}
         >
           <span><span className="font-semibold text-blue">[필수]</span> 개인정보처리방침 동의</span>
         </Checkbox>
