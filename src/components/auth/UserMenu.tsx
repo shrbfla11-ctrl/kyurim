@@ -19,6 +19,8 @@ export type UserSummary = {
   email: string | null;
   name: string | null;
   avatarUrl: string | null;
+  /** 직접 올린 사진인지 (소셜 사진과 구분) */
+  customAvatar: boolean;
   isAdmin: boolean;
   /** 연결된 로그인 방식 (email, google, kakao ...) */
   providers: string[];

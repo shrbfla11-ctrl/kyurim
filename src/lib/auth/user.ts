@@ -9,7 +9,7 @@ export async function getUserSummary(): Promise<UserSummary | null> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
-  const { data: profile } = await supabase.from("profiles").select("role, name, marketing_opt_in").eq("id", user.id).maybeSingle();
+  const { data: profile } = await supabase.from("profiles").select("role, name, marketing_opt_in, avatar_url").eq("id", user.id).maybeSingle();
   // 공급자별로 메타데이터 키가 다릅니다. (이메일 가입: name / Google: name, picture / Kakao: full_name, preferred_username)
   const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
   const pick = (...keys: string[]) => {
@@ -23,7 +23,8 @@ export async function getUserSummary(): Promise<UserSummary | null> {
     id: user.id,
     email: user.email ?? null,
     name: profile?.name ?? pick("name", "full_name", "preferred_username", "nickname"),
-    avatarUrl: pick("avatar_url", "picture"),
+    avatarUrl: profile?.avatar_url ?? pick("avatar_url", "picture"),
+    customAvatar: !!profile?.avatar_url,
     isAdmin: profile?.role === "admin",
     providers: ((user.app_metadata?.providers as string[] | undefined) ?? []).filter(Boolean),
     marketingOptIn: profile?.marketing_opt_in ?? meta.marketing_opt_in === true,

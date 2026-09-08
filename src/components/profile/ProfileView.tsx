@@ -6,7 +6,7 @@ import { Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { FormError, PasswordField, SuccessText, TextField } from "@/components/ui/Input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import type { UserSummary } from "@/components/auth/UserMenu";
 import { collect, validateName, validateNewPassword, validatePasswordConfirm } from "@/components/auth/validate";
 import { deleteAccount } from "@/lib/auth/actions";
@@ -126,12 +126,12 @@ export function ProfileView({ user }: { user: UserSummary }) {
   return (
     <div className="flex flex-col gap-4 text-ink">
       <div className={`${card} flex items-center gap-4`}>
-        <Avatar className="size-16">
-          {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
-          <AvatarFallback className="bg-blue-light text-2xl font-bold text-blue">
-            {(user.name ?? user.email ?? "?").slice(0, 1).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
+        <AvatarUploader
+          userId={user.id}
+          avatarUrl={user.avatarUrl}
+          fallback={(user.name ?? user.email ?? "?").slice(0, 1).toUpperCase()}
+          canRemove={user.customAvatar}
+        />
         <div className="min-w-0 flex-1">
           <div className="text-xl font-bold tracking-[-0.02em]">{user.name ?? "PUF 사용자"}</div>
           {user.email && <div className="mt-0.5 font-inter text-sm text-gray-5">{user.email}</div>}

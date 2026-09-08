@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Activity, House, LayoutGrid, MessageSquareText, Package, ScanLine } from "lucide-react";
 import type { UserSummary } from "@/components/auth/UserMenu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export type AdminNavKey = "dashboard" | "products" | "stickers" | "monitor" | "support";
 
@@ -61,7 +62,10 @@ export function AdminShell({
           홈으로 돌아가기
         </Link>
         <div className="-mt-4 flex items-center gap-2.5 rounded-[14px] bg-gray-1 p-3">
-          <span className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-blue-light text-sm font-bold text-blue">{initial}</span>
+          <Avatar className="size-9 flex-none">
+            {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
+            <AvatarFallback className="bg-blue-light text-sm font-bold text-blue">{initial}</AvatarFallback>
+          </Avatar>
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm font-bold">{user.name ?? "관리자"}</span>
             <span className="block truncate text-xs text-gray-4">{user.email}</span>
