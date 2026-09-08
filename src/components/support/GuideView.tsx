@@ -6,6 +6,7 @@ import { Camera, Check, ChevronDown, ChevronRight, CircleHelp, Clock, Info, Lock
 import { Button } from "@/components/ui/Button";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { guideSections, guideSteps, type GuideSection } from "@/lib/support/content";
+import { PermissionMock } from "@/components/support/PermissionMock";
 
 const card = "rounded-[20px] bg-white shadow-card";
 
@@ -112,10 +113,15 @@ export function GuideView() {
                         {s.paras.map((p) => <p key={p} className="text-base leading-relaxed text-gray-6">{p}</p>)}
                         {s.key === "prep" && (
                           <div className="grid gap-3 sm:grid-cols-2">
-                            {[["iOS", "설정 → Safari → 카메라 → 허용"], ["Android", "주소창 자물쇠 → 권한 → 카메라 허용"]].map(([os, how]) => (
+                            {(
+                              [
+                                ["iOS", "처음 스캔할 때 뜨는 팝업에서 '허용'을 누르세요. 실수로 막았다면 설정 → Safari → 카메라 → 허용"],
+                                ["Android", "처음 스캔할 때 뜨는 팝업에서 '허용'을 누르세요. 실수로 막았다면 주소창 자물쇠 → 권한 → 카메라 허용"],
+                              ] as const
+                            ).map(([os, how]) => (
                               <div key={os} className="flex flex-col gap-3 rounded-2xl bg-gray-1 p-4">
                                 <span className="font-inter text-[13px] font-bold text-gray-5">{os}</span>
-                                <div className="flex h-40 items-center justify-center rounded-xl border-[1.5px] border-dashed border-gray-3 text-[13px] text-gray-4">카메라 권한 화면 스크린샷</div>
+                                <PermissionMock os={os} />
                                 <span className="text-sm leading-normal text-gray-6">{how}</span>
                               </div>
                             ))}
