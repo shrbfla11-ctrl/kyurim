@@ -21,7 +21,7 @@ const roundBtn =
  * 촬영 버튼 한 번으로 [플래시 ON 충전 → 플래시 OFF → 자동 촬영 → /api/scan] 순서가 진행됩니다.
  * 카메라를 쓸 수 없는 환경에서는 디자인의 어두운 배경 위에 갤러리 업로드만 제공합니다.
  */
-export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) {
+export function ScanView({ frameClass = "w-[240px]", isAdmin = false, initialEnrollSerial = "" }: { frameClass?: string; isAdmin?: boolean; initialEnrollSerial?: string }) {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -35,6 +35,10 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
   const settings = useSyncExternalStore(subscribeSettings, readSettings, () => DEFAULT_SETTINGS);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
+  // 등록 모드(관리자): 촬영 결과를 대조하지 않고 지정한 시리얼의 서명으로 저장합니다.
+  const [enrollSerial, setEnrollSerial] = useState(initialEnrollSerial.toUpperCase());
+  const [enrollMode, setEnrollMode] = useState(isAdmin && initialEnrollSerial.length > 0);
+  const [enrolled, setEnrolled] = useState<{ serial: string; beads: number } | null>(null);
   function updateSettings(patch: Partial<CaptureSettings>) {
     writeSettings(clampSettings({ ...settings, ...patch }));
   }
@@ -96,19 +100,28 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
     }, 3200);
   }, []);
 
-  /** 프레임 묶음(연속 캡처) 또는 단일 이미지(갤러리)를 서버로 보냅니다. */
+  /** 프레임 묶음(연속 캡처) 또는 단일 이미지(갤러리)를 서버로 보냅니다. 등록 모드면 대조 대신 서명을 저장합니다. */
   const analyze = useCallback(
     async (frames: Blob[], timestamps: number[], used: CaptureSettings | null) => {
       setState("scanning");
+      const form = new FormData();
+      frames.forEach((b, i) => form.append("frames", b, `frame-${i}.jpg`));
+      form.append("timestamps", JSON.stringify(timestamps));
+      if (used) {
+        form.append("chargeMs", String(used.chargeMs));
+        form.append("frameCount", String(used.frameCount));
+        form.append("frameIntervalMs", String(used.frameIntervalMs));
+      }
+      if (enrollMode) {
+        form.append("serial", enrollSerial);
+        const res = await fetch("/api/puf/enroll", { method: "POST", body: form });
+        const data = (await res.json().catch(() => ({}))) as { error?: string; beads?: number; serial?: string };
+        if (!res.ok) return showError("등록에 실패했어요", data.error ?? "다시 시도해 주세요.");
+        setEnrolled({ serial: data.serial ?? enrollSerial, beads: data.beads ?? 0 });
+        setState("idle");
+        return;
+      }
       try {
-        const form = new FormData();
-        frames.forEach((b, i) => form.append("frames", b, `frame-${i}.jpg`));
-        form.append("timestamps", JSON.stringify(timestamps));
-        if (used) {
-          form.append("chargeMs", String(used.chargeMs));
-          form.append("frameCount", String(used.frameCount));
-          form.append("frameIntervalMs", String(used.frameIntervalMs));
-        }
         const res = await fetch("/api/scan", { method: "POST", body: form });
         if (!res.ok) throw new Error("bad response");
         const data = (await res.json()) as { id: string };
@@ -118,11 +131,13 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
         showError("분석에 실패했어요", "네트워크 상태를 확인하고 다시 시도해 주세요.");
       }
     },
-    [router, showError],
+    [router, showError, enrollMode, enrollSerial],
   );
 
   async function capture() {
     if (state !== "idle") return;
+    if (enrollMode && !enrollSerial.trim()) return showError("시리얼이 없어요", "등록할 스티커 시리얼을 입력해 주세요.");
+    setEnrolled(null);
     const video = videoRef.current;
     if (!hasCamera || !video || video.videoWidth === 0) {
       showError("카메라를 사용할 수 없어요", "카메라 권한을 허용하거나 갤러리에서 이미지를 선택해 주세요.");
@@ -180,7 +195,7 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
     : state === "capturing"
       ? progress ? `촬영 중 ${progress.done} / ${progress.total}` : "촬영 중이에요"
       : scanning
-        ? "패턴을 대조하고 있어요…"
+        ? enrollMode ? "패턴을 등록하고 있어요…" : "패턴을 대조하고 있어요…"
         : "스티커를 사각형 안에 맞춰 주세요";
   const frameColor = isError ? "border-red" : "border-blue";
   const corner = `absolute h-9 w-9 ${frameColor} transition-colors duration-300`;
@@ -206,6 +221,41 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
           </Link>
         </span>
       </div>
+
+      {/* 등록 모드 배너 (관리자) */}
+      {isAdmin && (
+        <div className="relative z-10 mx-4 mt-3 flex items-center gap-2 rounded-2xl bg-white/10 px-3 py-2 backdrop-blur">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={enrollMode}
+            onClick={() => { setEnrollMode((v) => !v); setEnrolled(null); }}
+            disabled={busy}
+            className={`flex h-8 flex-none items-center rounded-full px-3 text-xs font-bold transition-colors duration-300 ${enrollMode ? "bg-amber text-ink" : "bg-white/15 text-white"}`}
+          >
+            {enrollMode ? "등록 모드" : "대조 모드"}
+          </button>
+          {enrollMode && (
+            <input
+              value={enrollSerial}
+              onChange={(e) => setEnrollSerial(e.target.value.toUpperCase())}
+              placeholder="스티커 시리얼 (PUF-LM26-000001)"
+              spellCheck={false}
+              className="h-8 min-w-0 flex-1 rounded-lg bg-white/90 px-2.5 font-inter text-[13px] font-semibold text-ink outline-none"
+            />
+          )}
+        </div>
+      )}
+      {enrolled && (
+        <div className="absolute inset-x-4 top-[128px] z-20 flex animate-toast items-center gap-3 rounded-2xl bg-white px-4 py-3.5 text-ink shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
+          <span className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-green-light text-green"><ShieldCheck size={20} strokeWidth={2.5} /></span>
+          <span className="flex-1">
+            <span className="block text-[15px] font-bold">등록했어요 · <span className="font-inter">{enrolled.serial}</span></span>
+            <span className="mt-0.5 block text-[13px] text-gray-5">비즈 {enrolled.beads}개의 감쇠 패턴을 저장했어요. 다음 시리얼을 입력하고 계속 등록할 수 있어요.</span>
+          </span>
+          <button type="button" aria-label="닫기" onClick={() => setEnrolled(null)} className="text-gray-4 hover:text-ink hover:brightness-100"><X size={18} /></button>
+        </div>
+      )}
 
       {/* 촬영 조건 패널 (논문 실험용: 조사 시간 · 프레임 수 · 간격) */}
       {settingsOpen && (

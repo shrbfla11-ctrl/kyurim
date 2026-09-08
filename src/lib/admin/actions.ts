@@ -41,44 +41,18 @@ export async function createProduct(input: CreateProductInput): Promise<{ ok: tr
   }
 }
 
-/**
- * 스티커 발급. 패턴 파일을 sticker-patterns 버킷에 올리고 stickers 행을 만듭니다.
- * 패턴 등록 엔진이 연결되기 전까지 상태는 업로드 성공 여부로만 정해집니다.
- */
-export async function issueStickers(form: FormData): Promise<{ ok: true; done: number; failed: number } | { ok: false; error: string }> {
+/** 스티커 발급: 시리얼 n 개를 "등록 대기" 상태로 만듭니다. 패턴 등록은 휴대폰 스캔 화면의 등록 모드에서 합니다. */
+export async function issueStickers(productId: string, count: number): Promise<{ ok: true; serials: string[] } | { ok: false; error: string }> {
   try {
     const supabase = await adminClient();
-    const productId = String(form.get("productId") ?? "");
-    const files = form.getAll("files").filter((f): f is File => f instanceof File && f.size > 0);
-    if (!productId || files.length === 0) return { ok: false, error: "제품과 파일을 선택해 주세요." };
-
-    const { data: product } = await supabase.from("products").select("id, manufacturers(name)").eq("id", productId).single();
-    if (!product) return { ok: false, error: "제품을 찾을 수 없어요." };
-    const makerCode = ((product.manufacturers as { name: string } | null)?.name ?? "PU").slice(0, 2).toUpperCase().replace(/[^A-Z]/g, "X");
-    const yy = String(new Date().getFullYear()).slice(2);
-    const { count } = await supabase.from("stickers").select("id", { count: "exact", head: true }).eq("product_id", productId);
-    let seq = (count ?? 0) + 1;
-
-    let done = 0;
-    let failed = 0;
-    for (const file of files) {
-      const serial = `PUF-${makerCode}${yy}-${String(seq++).padStart(6, "0")}`;
-      const path = `${productId}/${serial}-${file.name}`;
-      const { error: upErr } = await supabase.storage.from("sticker-patterns").upload(path, file, { upsert: false });
-      const { error } = await supabase.from("stickers").insert({
-        serial,
-        product_id: productId,
-        lot: `${makerCode}${yy}-${new Date().toISOString().slice(5, 10).replace("-", "")}`,
-        pattern_ref: upErr ? null : path,
-        status: upErr ? "failed" : "done",
-      });
-      if (error || upErr) failed++;
-      else done++;
-    }
+    const n = Math.floor(Number(count));
+    if (!productId || !Number.isFinite(n) || n < 1 || n > 500) return { ok: false, error: "제품과 수량(1~500)을 확인해 주세요." };
+    const { data, error } = await supabase.rpc("issue_stickers", { p_product_id: productId, p_count: n });
+    if (error || !data) return { ok: false, error: "발급에 실패했어요." };
     revalidatePath("/admin/stickers");
     revalidatePath("/admin/products");
     revalidatePath("/admin");
-    return { ok: true, done, failed };
+    return { ok: true, serials: data };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "오류가 발생했어요." };
   }

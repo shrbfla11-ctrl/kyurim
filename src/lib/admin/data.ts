@@ -44,11 +44,16 @@ export async function listScanLogs(period: Period = "today", limit = 200): Promi
   });
 }
 
+function beadCount(sig: unknown): number | null {
+  if (sig && typeof sig === "object" && Array.isArray((sig as { beads?: unknown }).beads)) return (sig as { beads: unknown[] }).beads.length;
+  return null;
+}
+
 export async function listRecentStickers(limit = 30): Promise<Sticker[]> {
   const supabase = await createClient();
   const { data } = await supabase
     .from("stickers")
-    .select("serial, issued_at, status, products(name)")
+    .select("serial, issued_at, status, pattern_signature, products(name)")
     .order("issued_at", { ascending: false })
     .limit(limit);
   return (data ?? []).map((s) => ({
@@ -56,6 +61,7 @@ export async function listRecentStickers(limit = 30): Promise<Sticker[]> {
     product: (s.products as { name: string } | null)?.name ?? "-",
     issuedAt: formatDate(s.issued_at),
     status: s.status,
+    beads: beadCount(s.pattern_signature),
   }));
 }
 

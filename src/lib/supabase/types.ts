@@ -9,6 +9,7 @@ export type InquiryCategory = "스캔·인식" | "계정·로그인" | "결과·
 export type InquiryStatus = "wait" | "done";
 export type MessageSender = "user" | "admin";
 
+export type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 export type ProductInfo = { title: string; body: string };
 
 type Rel = { foreignKeyName: string; columns: string[]; isOneToOne: boolean; referencedRelation: string; referencedColumns: string[] };
@@ -32,6 +33,7 @@ export type Database = {
       }, typeof relationships.products>;
       stickers: Row<{
         id: string; serial: string; product_id: string; lot: string | null; pattern_ref: string | null; pattern_hash: string | null;
+        pattern_signature: Json | null;
         status: StickerStatus; issued_at: string; scan_count: number; first_scanned_at: string | null;
       }, typeof relationships.stickers>;
       scan_records: Row<{
@@ -57,6 +59,9 @@ export type Database = {
     Functions: {
       is_admin: { Args: Record<string, never>; Returns: boolean };
       delete_my_account: { Args: Record<string, never>; Returns: undefined };
+      enroll_sticker: { Args: { p_serial: string; p_signature: Json }; Returns: undefined };
+      list_signatures: { Args: Record<string, never>; Returns: { serial: string; signature: Json }[] };
+      issue_stickers: { Args: { p_product_id: string; p_count: number }; Returns: string[] };
       pick_placeholder_sticker: { Args: Record<string, never>; Returns: string | null };
       record_scan: {
         Args: { p_serial: string | null; p_outcome: ScanOutcome; p_score?: number | null; p_region?: string | null; p_charge_ms?: number | null; p_frame_count?: number | null; p_frame_interval_ms?: number | null };

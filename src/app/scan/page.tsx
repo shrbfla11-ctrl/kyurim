@@ -14,9 +14,11 @@ const tips = [
   { title: "잠시 고정하세요", desc: "패턴 대조에 1~2초가 걸려요." },
 ];
 
-export default async function ScanPage() {
+export default async function ScanPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const { enroll } = await searchParams;
   const user = await getUserSummary();
   if (!user) redirect("/login?next=/scan");
+  const enrollSerial = typeof enroll === "string" ? enroll : "";
   return (
     <>
       <div className="hidden lg:block">
@@ -27,7 +29,7 @@ export default async function ScanPage() {
       <main className="lg:bg-gray-1 lg:px-20 lg:py-12">
         <div className="lg:mx-auto lg:grid lg:max-w-[1280px] lg:grid-cols-[1fr_400px] lg:gap-12">
           <div className="h-[calc(100dvh-84px)] lg:h-[720px] lg:overflow-hidden lg:rounded-3xl lg:shadow-card">
-            <ScanView frameClass="w-[240px] lg:w-[320px]" />
+            <ScanView frameClass="w-[240px] lg:w-[320px]" isAdmin={user.isAdmin} initialEnrollSerial={enrollSerial} />
           </div>
 
           <aside className="hidden flex-col gap-4 lg:flex">

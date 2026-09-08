@@ -7,7 +7,7 @@ export type { StickerStatus };
 
 export type Product = { id: string; name: string; maker: string; category: Category; stickers: number; createdAt: string };
 export type ScanLog = { id: string; time: string; product: string; stickerId: string; outcome: ScanOutcome; count: number; region: string };
-export type Sticker = { id: string; product: string; issuedAt: string; status: StickerStatus };
+export type Sticker = { id: string; product: string; issuedAt: string; status: StickerStatus; beads: number | null };
 export type DashboardStats = {
   scansToday: number; scansDelta: string; genuineRate: number; genuineNote: string;
   suspected: number; suspectedDelta: string; stickersIssued: number; stickersNote: string;
