@@ -42,6 +42,8 @@ export async function POST(request: NextRequest) {
     p_charge_ms: conditions?.chargeMs ?? null,
     p_frame_count: conditions ? parsed.frames.length : null,
     p_frame_interval_ms: conditions?.frameIntervalMs ?? null,
+    p_beads: verdict.beads,
+    p_matched: verdict.matched,
   });
   if (error || !id) return NextResponse.json({ error: "기록을 저장하지 못했어요." }, { status: 500 });
   return NextResponse.json({ id, outcome: verdict.outcome, score: verdict.score, beads: verdict.beads, matched: verdict.matched });

@@ -26,7 +26,7 @@ export async function listScanLogs(period: Period = "today", limit = 200): Promi
   else since.setDate(since.getDate() - (period === "7d" ? 7 : 30));
   const { data } = await supabase
     .from("scan_records")
-    .select("id, scanned_at, outcome, count_at_scan, region, stickers(serial, products(name))")
+    .select("id, scanned_at, outcome, count_at_scan, region, score, beads, matched, charge_ms, frame_count, frame_interval_ms, stickers(serial, products(name))")
     .gte("scanned_at", since.toISOString())
     .order("scanned_at", { ascending: false })
     .limit(limit);
@@ -40,6 +40,12 @@ export async function listScanLogs(period: Period = "today", limit = 200): Promi
       outcome: r.outcome,
       count: r.count_at_scan,
       region: r.region ?? "-",
+      score: r.score === null ? null : Number(r.score),
+      beads: r.beads,
+      matched: r.matched,
+      chargeMs: r.charge_ms,
+      frameCount: r.frame_count,
+      frameIntervalMs: r.frame_interval_ms,
     };
   });
 }

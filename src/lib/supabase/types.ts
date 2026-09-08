@@ -39,7 +39,7 @@ export type Database = {
       scan_records: Row<{
         id: string; user_id: string | null; sticker_id: string | null; outcome: ScanOutcome; score: number | null;
         count_at_scan: number; region: string | null; scanned_at: string;
-        charge_ms: number | null; frame_count: number | null; frame_interval_ms: number | null;
+        charge_ms: number | null; frame_count: number | null; frame_interval_ms: number | null; beads: number | null; matched: number | null;
       }, typeof relationships.scan_records>;
       inquiries: Row<{
         id: string; ticket: string; user_id: string; category: InquiryCategory; subject: string; status: InquiryStatus;
@@ -64,7 +64,7 @@ export type Database = {
       issue_stickers: { Args: { p_product_id: string; p_count: number }; Returns: string[] };
       pick_placeholder_sticker: { Args: Record<string, never>; Returns: string | null };
       record_scan: {
-        Args: { p_serial: string | null; p_outcome: ScanOutcome; p_score?: number | null; p_region?: string | null; p_charge_ms?: number | null; p_frame_count?: number | null; p_frame_interval_ms?: number | null };
+        Args: { p_serial: string | null; p_outcome: ScanOutcome; p_score?: number | null; p_region?: string | null; p_charge_ms?: number | null; p_frame_count?: number | null; p_frame_interval_ms?: number | null; p_beads?: number | null; p_matched?: number | null };
         Returns: string;
       };
       scan_result: { Args: { p_id: string }; Returns: ScanResultJson | null };

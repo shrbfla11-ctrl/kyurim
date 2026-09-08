@@ -15,7 +15,7 @@ const filters: { key: Filter; label: string }[] = [
   { key: "unverified", label: "확인 불가" },
   { key: "fake", label: "위조 의심" },
 ];
-const cols = "180px 1fr 130px 110px 160px";
+const cols = "150px 1fr 110px 90px 90px 150px 90px 130px";
 
 /** 스캔 로그 표: 결과 필터 칩, 기간 선택, CSV 내보내기 */
 export function ScanMonitor({ logs, period }: { logs: ScanLog[]; period: Period }) {
@@ -27,8 +27,8 @@ export function ScanMonitor({ logs, period }: { logs: ScanLog[]; period: Period 
 
   function exportCsv() {
     const label: Record<ScanOutcome, string> = { genuine: "정품", unverified: "확인 불가", fake: "위조 의심" };
-    const head = ["시간", "제품", "스티커 ID", "결과", "스캔 횟수", "지역"];
-    const body = rows.map((r) => [r.time, r.product, r.stickerId, label[r.outcome], r.count, r.region]);
+    const head = ["시간", "제품", "스티커 ID", "결과", "점수", "비즈(일치/검출)", "조사(ms)", "프레임", "간격(ms)", "스캔 횟수", "지역"];
+    const body = rows.map((r) => [r.time, r.product, r.stickerId, label[r.outcome], r.score ?? "", r.beads === null ? "" : `${r.matched ?? 0}/${r.beads}`, r.chargeMs ?? "", r.frameCount ?? "", r.frameIntervalMs ?? "", r.count, r.region]);
     const csv = [head, ...body].map((l) => l.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
     const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
     const a = document.createElement("a");
@@ -70,7 +70,7 @@ export function ScanMonitor({ logs, period }: { logs: ScanLog[]; period: Period 
       </div>
 
       <TableHead cols={cols}>
-        <span>시간</span><span>제품</span><span>결과</span><span className="text-right">스캔 횟수</span><span className="text-right">지역</span>
+        <span>시간</span><span>제품</span><span>결과</span><span className="text-right">점수</span><span className="text-right">비즈</span><span className="text-right">촬영 조건</span><span className="text-right">스캔 횟수</span><span className="text-right">지역</span>
       </TableHead>
       {rows.map((r) => (
         <TableRow key={r.id} cols={cols}>
@@ -80,6 +80,9 @@ export function ScanMonitor({ logs, period }: { logs: ScanLog[]; period: Period 
             <span className="block font-inter text-[13px] text-gray-4">{r.stickerId}</span>
           </span>
           <span><OutcomeBadge outcome={r.outcome} /></span>
+          <span className="text-right font-inter text-sm">{r.score === null ? "-" : r.score.toFixed(2)}</span>
+          <span className="text-right font-inter text-sm" title="일치 / 검출">{r.beads === null ? "-" : `${r.matched ?? 0}/${r.beads}`}</span>
+          <span className="text-right font-inter text-[13px] text-gray-5">{r.chargeMs === null ? "-" : `${(r.chargeMs / 1000).toFixed(1)}s · ${r.frameCount}장 · ${r.frameIntervalMs}ms`}</span>
           <span className={`text-right font-inter font-semibold ${r.count >= 10 ? "text-red" : ""}`}>{r.count}</span>
           <span className="text-right text-gray-5">{r.region}</span>
         </TableRow>
