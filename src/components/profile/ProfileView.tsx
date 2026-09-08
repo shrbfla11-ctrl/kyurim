@@ -9,6 +9,7 @@ import { FormError, PasswordField, SuccessText, TextField } from "@/components/u
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { UserSummary } from "@/components/auth/UserMenu";
 import { collect, validateName, validateNewPassword, validatePasswordConfirm } from "@/components/auth/validate";
+import { deleteAccount } from "@/lib/auth/actions";
 
 const card = "rounded-[20px] bg-white p-6 shadow-card";
 const sectionTitle = "text-base font-bold";
@@ -103,8 +104,24 @@ export function ProfileView({ user }: { user: UserSummary }) {
     if (error) setMarketing(!next);
   }
 
-  // 계정 삭제 (서버 처리 연결 전까지 안내만)
+  // 계정 삭제: 확인 문구 입력 후 서버 액션으로 처리
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const DELETE_WORD = "삭제";
+  async function confirmDelete() {
+    if (deleteConfirm !== DELETE_WORD || deleteBusy) return;
+    setDeleteBusy(true);
+    setDeleteError(null);
+    const res = await deleteAccount();
+    if (!res.ok) {
+      setDeleteBusy(false);
+      return setDeleteError(res.error);
+    }
+    router.replace("/");
+    router.refresh();
+  }
 
   return (
     <div className="flex flex-col gap-4 text-ink">
@@ -197,8 +214,27 @@ export function ProfileView({ user }: { user: UserSummary }) {
         </button>
       </div>
       {deleteOpen && (
-        <div className="rounded-2xl bg-red-light p-4 text-sm leading-normal text-red-text">
-          계정 삭제 기능은 준비 중이에요. 지금 삭제를 원하시면 <a href="mailto:admin@puf.com" className="font-bold text-red-dark">admin@puf.com</a> 으로 요청해 주시면 처리해 드려요.
+        <div className="flex flex-col gap-3 rounded-2xl bg-red-light p-5 text-sm leading-normal text-red-text">
+          <div>
+            <div className="text-[15px] font-bold text-red-dark">정말 삭제할까요?</div>
+            <p className="mt-1">계정 정보, 문의 내역, 첨부 파일이 즉시 삭제되고 복구할 수 없어요. 스캔 기록은 개인 정보 없이 통계로만 남아요.</p>
+          </div>
+          <label className="block">
+            <span className="mb-1.5 block text-[13px] font-semibold text-red-dark">확인을 위해 &apos;{DELETE_WORD}&apos; 를 입력해 주세요</span>
+            <input
+              value={deleteConfirm}
+              onChange={(e) => setDeleteConfirm(e.target.value)}
+              placeholder={DELETE_WORD}
+              className="h-12 w-full rounded-xl border-[1.5px] border-transparent bg-white px-4 text-base text-ink outline-none transition-colors duration-300 focus:border-red"
+            />
+          </label>
+          {deleteError && <div className="font-semibold text-red">{deleteError}</div>}
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="ghost" size="md" onClick={() => { setDeleteOpen(false); setDeleteConfirm(""); }} className="bg-white text-gray-6">취소</Button>
+            <Button type="button" size="md" onClick={confirmDelete} disabled={deleteConfirm !== DELETE_WORD} loading={deleteBusy} loadingLabel="삭제 중..." className="bg-red hover:bg-red-dark">
+              계정 삭제
+            </Button>
+          </div>
         </div>
       )}
     </div>

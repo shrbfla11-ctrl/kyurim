@@ -55,6 +55,7 @@ export type Database = {
     };
     Functions: {
       is_admin: { Args: Record<string, never>; Returns: boolean };
+      delete_my_account: { Args: Record<string, never>; Returns: undefined };
       pick_placeholder_sticker: { Args: Record<string, never>; Returns: string | null };
       record_scan: { Args: { p_serial: string | null; p_outcome: ScanOutcome; p_score?: number | null; p_region?: string | null }; Returns: string };
       scan_result: { Args: { p_id: string }; Returns: ScanResultJson | null };
