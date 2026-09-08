@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { CircleHelp, Image as ImageIcon, ShieldCheck, TriangleAlert, X, Zap, ZapOff } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { CircleHelp, Image as ImageIcon, ShieldCheck, SlidersHorizontal, TriangleAlert, X, Zap, ZapOff } from "lucide-react";
+import { DEFAULT_SETTINGS, clampSettings, readSettings, subscribeSettings, writeSettings, type CaptureSettings } from "@/lib/scan/capture";
 
 type ScanState = "idle" | "charging" | "capturing" | "scanning" | "error";
 
-/** 축광 비즈에 빛을 먹이는 시간(ms). 실제 스티커로 테스트하며 조정합니다. */
-const CHARGE_MS = 2500;
-/** 플래시를 끈 뒤 카메라 노출이 어두운 장면에 맞춰지도록 기다리는 시간(ms) */
-const SETTLE_MS = 400;
+/** 연속 캡처 프레임 한 변 크기(px). 프레임 수가 많아 1024 보다 작게 둡니다. */
+const FRAME_PX = 800;
 
 const sleep = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
 
@@ -32,6 +31,13 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
   const [torchSupported, setTorchSupported] = useState(false);
   const [torchOn, setTorchOn] = useState(false);
   const [errorMsg, setErrorMsg] = useState<{ title: string; desc: string } | null>(null);
+  // 촬영 조건은 기기에 기억합니다(논문 실험용으로 조절 가능). 서버 렌더 시에는 기본값을 쓰고 클라이언트에서 저장값으로 바뀝니다.
+  const settings = useSyncExternalStore(subscribeSettings, readSettings, () => DEFAULT_SETTINGS);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
+  function updateSettings(patch: Partial<CaptureSettings>) {
+    writeSettings(clampSettings({ ...settings, ...patch }));
+  }
 
   // 카메라 열기
   useEffect(() => {
@@ -90,12 +96,19 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
     }, 3200);
   }, []);
 
+  /** 프레임 묶음(연속 캡처) 또는 단일 이미지(갤러리)를 서버로 보냅니다. */
   const analyze = useCallback(
-    async (image: Blob) => {
+    async (frames: Blob[], timestamps: number[], used: CaptureSettings | null) => {
       setState("scanning");
       try {
         const form = new FormData();
-        form.append("image", image, "scan.jpg");
+        frames.forEach((b, i) => form.append("frames", b, `frame-${i}.jpg`));
+        form.append("timestamps", JSON.stringify(timestamps));
+        if (used) {
+          form.append("chargeMs", String(used.chargeMs));
+          form.append("frameCount", String(used.frameCount));
+          form.append("frameIntervalMs", String(used.frameIntervalMs));
+        }
         const res = await fetch("/api/scan", { method: "POST", body: form });
         if (!res.ok) throw new Error("bad response");
         const data = (await res.json()) as { id: string };
@@ -115,41 +128,47 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
       showError("카메라를 사용할 수 없어요", "카메라 권한을 허용하거나 갤러리에서 이미지를 선택해 주세요.");
       return;
     }
-    // 1) 플래시로 비즈에 빛을 먹이고 2) 플래시를 끈 뒤 노출이 안정되면 3) 촬영합니다.
+    setSettingsOpen(false);
+    const used = settings;
+    // 1) 플래시로 비즈에 빛을 먹이고 2) 플래시를 끈 직후부터 3) 일정 간격으로 여러 장을 찍어 감쇠 곡선을 담습니다.
     if (torchSupported) {
       setState("charging");
       const lit = await setTorch(true);
-      if (lit) await sleep(CHARGE_MS);
+      if (lit) await sleep(used.chargeMs);
       await setTorch(false);
-      setState("capturing");
-      await sleep(SETTLE_MS);
-    } else {
-      setState("capturing");
     }
+    setState("capturing");
     // 가이드 프레임(중앙 정사각형) 영역만 잘라서 보냅니다.
     const side = Math.min(video.videoWidth, video.videoHeight) * 0.7;
     const sx = (video.videoWidth - side) / 2;
     const sy = (video.videoHeight - side) / 2;
     const canvas = document.createElement("canvas");
-    canvas.width = 1024;
-    canvas.height = 1024;
+    canvas.width = FRAME_PX;
+    canvas.height = FRAME_PX;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    ctx.drawImage(video, sx, sy, side, side, 0, 0, 1024, 1024);
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) return showError("초점이 맞지 않아요", "스티커에 가까이 대고 흔들리지 않게 다시 촬영해 주세요.");
-        analyze(blob);
-      },
-      "image/jpeg",
-      0.9,
-    );
+    const frames: Blob[] = [];
+    const timestamps: number[] = [];
+    const t0 = performance.now();
+    for (let i = 0; i < used.frameCount; i++) {
+      const target = t0 + i * used.frameIntervalMs;
+      const wait = target - performance.now();
+      if (wait > 0) await sleep(wait);
+      ctx.drawImage(video, sx, sy, side, side, 0, 0, FRAME_PX, FRAME_PX);
+      timestamps.push(Math.round(performance.now() - t0));
+      const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", 0.85));
+      if (blob) frames.push(blob);
+      setProgress({ done: i + 1, total: used.frameCount });
+    }
+    setProgress(null);
+    if (frames.length === 0) return showError("초점이 맞지 않아요", "스티커에 가까이 대고 흔들리지 않게 다시 촬영해 주세요.");
+    analyze(frames, timestamps, used);
   }
 
   function pickFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
-    if (file) analyze(file);
+    if (file) analyze([file], [0], null);
   }
 
   const charging = state === "charging";
@@ -159,7 +178,7 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
   const centerText = charging
     ? "빛을 충전하고 있어요…"
     : state === "capturing"
-      ? "촬영 중이에요"
+      ? progress ? `촬영 중 ${progress.done} / ${progress.total}` : "촬영 중이에요"
       : scanning
         ? "패턴을 대조하고 있어요…"
         : "스티커를 사각형 안에 맞춰 주세요";
@@ -178,10 +197,31 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
           <X size={22} />
         </button>
         <span className="text-[15px] font-semibold">정품 확인</span>
-        <Link href="/guide" aria-label="도움말" className={`${roundBtn} h-11 w-11`}>
-          <CircleHelp size={22} />
-        </Link>
+        <span className="flex gap-2">
+          <button type="button" aria-label="촬영 조건" aria-expanded={settingsOpen} onClick={() => setSettingsOpen((v) => !v)} disabled={busy} className={`${roundBtn} h-11 w-11 ${settingsOpen ? "bg-white/30" : ""}`}>
+            <SlidersHorizontal size={22} />
+          </button>
+          <Link href="/guide" aria-label="도움말" className={`${roundBtn} h-11 w-11`}>
+            <CircleHelp size={22} />
+          </Link>
+        </span>
       </div>
+
+      {/* 촬영 조건 패널 (논문 실험용: 조사 시간 · 프레임 수 · 간격) */}
+      {settingsOpen && (
+        <div className="absolute inset-x-4 top-[76px] z-20 flex flex-col gap-4 rounded-2xl bg-white p-5 text-ink shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
+          <div className="flex items-center justify-between">
+            <span className="text-[15px] font-bold">촬영 조건</span>
+            <button type="button" onClick={() => updateSettings(DEFAULT_SETTINGS)} className="text-[13px] font-semibold text-gray-5 hover:text-ink hover:brightness-100">기본값</button>
+          </div>
+          <SettingRow label="플래시 조사 시간" value={`${(settings.chargeMs / 1000).toFixed(1)}초`} min={500} max={10000} step={100} current={settings.chargeMs} onChange={(v) => updateSettings({ chargeMs: v })} />
+          <SettingRow label="촬영 프레임 수" value={`${settings.frameCount}장`} min={1} max={30} step={1} current={settings.frameCount} onChange={(v) => updateSettings({ frameCount: v })} />
+          <SettingRow label="프레임 간격" value={`${settings.frameIntervalMs}ms`} min={50} max={1000} step={50} current={settings.frameIntervalMs} onChange={(v) => updateSettings({ frameIntervalMs: v })} />
+          <div className="text-xs text-gray-4">
+            플래시를 끈 뒤 총 <span className="font-inter font-semibold text-gray-6">{((settings.frameCount - 1) * settings.frameIntervalMs / 1000).toFixed(1)}초</span> 동안 촬영해요. 설정은 이 기기에 저장돼요.
+          </div>
+        </div>
+      )}
 
       {/* 오류 토스트 */}
       {isError && errorMsg && (
@@ -230,7 +270,7 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
                 ? "카메라를 켜거나 갤러리에서 이미지를 선택해 주세요"
                 : !torchSupported
                   ? "이 기기는 플래시를 지원하지 않아요. 밝은 빛을 쬔 스티커를 어두운 곳에서 촬영해 주세요"
-                  : "촬영을 누르면 플래시가 잠깐 켜졌다가 꺼진 뒤 자동으로 찍혀요"}
+                  : `플래시 ${(settings.chargeMs / 1000).toFixed(1)}초 → 끈 뒤 ${settings.frameCount}장 연속 촬영`}
         </div>
       </div>
 
@@ -269,5 +309,17 @@ export function ScanView({ frameClass = "w-[240px]" }: { frameClass?: string }) 
         </div>
       </div>
     </div>
+  );
+}
+
+function SettingRow({ label, value, min, max, step, current, onChange }: { label: string; value: string; min: number; max: number; step: number; current: number; onChange: (v: number) => void }) {
+  return (
+    <label className="block">
+      <span className="flex justify-between text-sm">
+        <span className="font-semibold text-gray-6">{label}</span>
+        <span className="font-inter font-semibold text-blue">{value}</span>
+      </span>
+      <input type="range" min={min} max={max} step={step} value={current} onChange={(e) => onChange(Number(e.target.value))} className="mt-2 w-full accent-blue" />
+    </label>
   );
 }

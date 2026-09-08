@@ -37,6 +37,7 @@ export type Database = {
       scan_records: Row<{
         id: string; user_id: string | null; sticker_id: string | null; outcome: ScanOutcome; score: number | null;
         count_at_scan: number; region: string | null; scanned_at: string;
+        charge_ms: number | null; frame_count: number | null; frame_interval_ms: number | null;
       }, typeof relationships.scan_records>;
       inquiries: Row<{
         id: string; ticket: string; user_id: string; category: InquiryCategory; subject: string; status: InquiryStatus;
@@ -57,7 +58,10 @@ export type Database = {
       is_admin: { Args: Record<string, never>; Returns: boolean };
       delete_my_account: { Args: Record<string, never>; Returns: undefined };
       pick_placeholder_sticker: { Args: Record<string, never>; Returns: string | null };
-      record_scan: { Args: { p_serial: string | null; p_outcome: ScanOutcome; p_score?: number | null; p_region?: string | null }; Returns: string };
+      record_scan: {
+        Args: { p_serial: string | null; p_outcome: ScanOutcome; p_score?: number | null; p_region?: string | null; p_charge_ms?: number | null; p_frame_count?: number | null; p_frame_interval_ms?: number | null };
+        Returns: string;
+      };
       scan_result: { Args: { p_id: string }; Returns: ScanResultJson | null };
       scan_history: {
         Args: Record<string, never>;
